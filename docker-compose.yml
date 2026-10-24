@@ -6,6 +6,7 @@ services:
       POSTGRES_USER: noese
       POSTGRES_PASSWORD: noese
       POSTGRES_DB: noese
+      TZ: Europe/Paris
     volumes:
       - donnees:/var/lib/postgresql/data
     healthcheck:
@@ -23,6 +24,9 @@ services:
       NOESE_WORKER_INTEGRE: "0"
       NOESE_SMTP_HOST: mailpit
       NOESE_SMTP_PORT: "1025"
+      # Heure française : affichage des dates, et relances envoyées seulement de 8 h à 18 h.
+      TZ: Europe/Paris
+      PGTZ: Europe/Paris
     ports:
       - "8000:8000"
     depends_on:

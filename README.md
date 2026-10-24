@@ -56,7 +56,7 @@ Noèse ne parle pas aux habitants. Il aide les agents à voir ce que la base ne 
 | Aucune fiche dans la base sans validation humaine | Contrainte en base, plus des tests sur la proposition, la validation sans nom, le réimport et l'export |
 | Export JSON et Markdown lisibles et réimportables | Tests d'aller-retour sur Markdown, JSON et CSV |
 | Contrastes 4,5:1 dans les deux thèmes, navigation au clavier | `scripts/contrastes.py` (tous au-dessus de 4,5:1) ; parcours au clavier vérifiés sur la liste des trous et la page de réponse |
-| `docker compose up` lance tout, README en français | Fichiers écrits, **mais pas encore testés** : Docker n'était pas disponible sur la machine de développement |
+| `docker compose up` lance tout, README en français | Testé avec Docker Desktop 29 et Compose 5 : construction, base, app, worker et Mailpit démarrent. Parcours complet vérifié dans les conteneurs : connexion par un vrai mail, analyse de la démo par le worker, demande reçue dans Mailpit, dictée, validation, export |
 
 ## Limites connues
 
@@ -80,7 +80,11 @@ docker compose up
 ```
 
 - Application : http://localhost:8000
-- Boîte mail de test : http://localhost:8025
+- Boîte mail de test : http://localhost:8025 (le lien de connexion du référent y arrive)
+
+Prévoyez environ 4 Go libres sur le disque pour les images. Les conteneurs sont à l'heure de Paris (`TZ`), ce qui compte pour les relances, envoyées de 8 h à 18 h.
+
+Ne placez pas le projet dans un dossier synchronisé (iCloud Drive, OneDrive, Dropbox) : la base locale de développement et le dépôt git supportent mal la synchronisation.
 
 Sur l'écran **Importer**, le bouton « Charger les données de démo » installe Ville-Exemple, une commune fictive : 32 pages de site et 309 questions d'habitants.
 
