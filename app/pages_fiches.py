@@ -6,7 +6,7 @@ from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 
-from . import db, demandes, echeances, fiches, verifications
+from . import connexion, db, demandes, echeances, fiches, verifications
 from .models import Fiche, Service
 from .pages_demandes import EN_TETES_LIEN, _page_metier
 from .web import page
@@ -153,7 +153,28 @@ def parametres_page(request: Request, message: str = "", relances: int | None = 
     bilan = echeances.Bilan(int(verifs), relances or 0, signalements or 0) if verifs and verifs.isdigit() else None
     with db.session() as s:
         return page(request, "parametres.html", p=verifications.parametres(s), services=_tri_services(s),
-                    message=message, bilan=bilan, mails=_derniers_mails(s))
+                    message=message, bilan=bilan, mails=_derniers_mails(s), referents=connexion.referents(s),
+                    erreur=request.query_params.get("erreur", ""))
+
+
+@routeur.post("/parametres/referents")
+def referents_ajouter(email: str = Form(""), nom: str = Form("")):
+    with db.session() as s:
+        try:
+            ajoute = connexion.ajouter(s, email, nom)
+        except ValueError as e:
+            return RedirectResponse(f"/parametres?{urlencode({'erreur': str(e)})}#referents", status_code=303)
+    return RedirectResponse(f"/parametres?message={'referent_ajoute' if ajoute else 'referent_existe'}#referents", status_code=303)
+
+
+@routeur.post("/parametres/referents/{utilisateur_id}/retirer")
+def referents_retirer(utilisateur_id: int):
+    with db.session() as s:
+        try:
+            connexion.retirer(s, utilisateur_id)
+        except ValueError as e:
+            return RedirectResponse(f"/parametres?{urlencode({'erreur': str(e)})}#referents", status_code=303)
+    return RedirectResponse("/parametres?message=referent_retire#referents", status_code=303)
 
 
 @routeur.post("/parametres/fraicheur")

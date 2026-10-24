@@ -60,15 +60,22 @@ Noèse ne parle pas aux habitants. Il aide les agents à voir ce que la base ne 
 
 ## Limites connues
 
-- Il n'y a pas encore de connexion pour le référent base : les écrans d'administration sont accessibles à toute personne qui atteint le serveur. À ajouter avant tout pilote.
 - Les évolutions de schéma passent par de petites migrations au démarrage (`app/migrations.py`), à reprendre dans Alembic avant les pilotes.
 - Avec un petit modèle (`ministral-8b`), le regroupement de questions proches est parfois trop fin (l'outil « Rassembler » y remédie), et la mise en forme ajoute parfois une phrase : la relecture affiche la réponse d'origine de l'agent pour la repérer.
 - La dictée n'a été testée qu'avec un fichier audio, pas avec un vrai micro sur téléphone.
 
+**Connexion du référent base**
+- Les écrans d'administration (accueil, import, trous, fiches, paramètres, export) demandent une connexion. Le référent tape son adresse et reçoit un **lien valable 15 minutes, utilisable une seule fois**. Il n'y a pas de mot de passe.
+- La session dure 30 jours sur le poste. Retirer un référent dans les Paramètres coupe sa session immédiatement.
+- La page répond toujours la même chose, que l'adresse soit connue ou non. Elle envoie au plus 5 liens par heure et par référent, et ne redirige jamais vers un autre site après la connexion.
+- Les services n'ont toujours pas de compte : leurs pages (`/r/…`, `/v/…`) restent accessibles par leur propre lien.
+- Le premier référent est créé au démarrage depuis `NOESE_REFERENT_BASE_EMAIL`. Les suivants s'ajoutent dans les Paramètres.
+- En développement, sans serveur de mail (`NOESE_SMTP_HOST=journal`), le lien s'affiche à l'écran, avec la mention « Mode développement ».
+
 ## Démarrer avec Docker
 
 ```bash
-cp .env.example .env   # puis renseignez NOESE_LLM_API_KEY et NOESE_SECRET
+cp .env.example .env   # puis renseignez NOESE_LLM_API_KEY, NOESE_SECRET et NOESE_REFERENT_BASE_EMAIL
 docker compose up
 ```
 

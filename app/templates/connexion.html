@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titre %}Connexion{% endblock %}
+{% block contenu %}
+<div class="conteneur-etroit" style="padding: 0">
+<p class="surtitre">Connexion</p>
+{% if etat == "envoye" %}
+  <h1 class="titre-2">Regardez vos mails</h1>
+  <p class="chapeau">Si {{ email or "cette adresse" }} est celle d'un référent de la base, un lien de connexion vient de partir. Il est valable 15 minutes et ne fonctionne qu'une fois.</p>
+  <p>Rien reçu au bout de quelques minutes ? Regardez dans les indésirables, ou <a href="/connexion">demandez un nouveau lien</a>.</p>
+  {% if lien_dev %}
+  <div class="message" role="status">
+    <p class="surtitre">Mode développement</p>
+    <p>L'envoi des mails est désactivé sur cette installation. Voici le lien, affiché ici uniquement pour cette raison :</p>
+    <p style="margin:0"><a href="{{ lien_dev }}">Se connecter</a></p>
+  </div>
+  {% endif %}
+{% elif etat == "lien_invalide" %}
+  <h1 class="titre-2">Ce lien ne fonctionne plus</h1>
+  <p class="chapeau">Un lien de connexion est valable 15 minutes et ne sert qu'une fois. Demandez-en un nouveau : c'est immédiat.</p>
+  <a class="bouton" href="/connexion">Recevoir un nouveau lien</a>
+{% else %}
+  <h1 class="titre-2">Bonjour</h1>
+  {% if message == "deconnecte" %}<div class="message" role="status">Vous êtes déconnecté.</div>{% endif %}
+  <p class="chapeau">Indiquez votre adresse mail : nous vous envoyons un lien pour vous connecter, sans mot de passe.</p>
+  {% if aucun_referent %}
+  <div class="message" role="alert">Aucun référent de la base n'est encore configuré. Ajoutez la ligne <code>NOESE_REFERENT_BASE_EMAIL=votre.adresse@ville.fr</code> au fichier <code>.env</code>, puis redémarrez Noèse.</div>
+  {% endif %}
+  <form method="post" action="/connexion">
+    <div class="champ">
+      <label for="email">Adresse mail</label>
+      <input id="email" name="email" type="email" required autocomplete="email" autofocus>
+    </div>
+    <button class="bouton bouton-large" type="submit">Recevoir mon lien de connexion</button>
+  </form>
+  <p class="legende" style="margin-top: var(--espace-m)">Vous êtes un service et vous avez reçu une question ? Utilisez le lien du mail : vous n'avez pas besoin de vous connecter.</p>
+{% endif %}
+</div>
+{% endblock %}

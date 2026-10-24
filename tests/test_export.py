@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime, timedelta
 
 import pytest
+from conftest import connecter
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
@@ -127,6 +128,7 @@ def test_pages_export_et_accueil(s, base):
 
     s.commit()
     with TestClient(app) as client:
+        connecter(client)
         r = client.get("/export/base.csv")
         assert r.headers["content-disposition"].startswith('attachment; filename="base-')
         assert r.text.startswith("﻿id;version;titre")

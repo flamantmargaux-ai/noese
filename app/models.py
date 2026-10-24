@@ -59,6 +59,18 @@ class Utilisateur(Base):
     __table_args__ = (CheckConstraint("role in ('referent_base','referent_metier')"),)
 
 
+class JetonConnexion(Base):
+    """Lien de connexion du référent base : valable 15 minutes, une seule fois."""
+
+    __tablename__ = "jeton_connexion"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    utilisateur_id: Mapped[int] = mapped_column(ForeignKey("utilisateur.id", ondelete="CASCADE"))
+    jeton_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    expire_le: Mapped[datetime] = mapped_column(DateTime)
+    utilise_le: Mapped[datetime | None] = mapped_column(DateTime)
+    cree_le: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
 class Import(Base):
     __tablename__ = "import"
     id: Mapped[int] = mapped_column(primary_key=True)

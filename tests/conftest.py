@@ -24,6 +24,7 @@ os.environ["NOESE_DATABASE_URL"] = _url_test()
 os.environ["NOESE_LLM_FOURNISSEUR"] = "factice"
 os.environ["NOESE_WORKER_INTEGRE"] = "0"
 os.environ["NOESE_SMTP_HOST"] = "journal"
+os.environ["NOESE_REFERENT_BASE_EMAIL"] = ""  # les tests créent leurs propres référents
 
 
 @pytest.fixture(scope="session")
@@ -47,3 +48,16 @@ def s(schema):
     with db.session() as session:
         yield session
         session.rollback()
+
+
+def connecter(client, email: str = "referent@ville.test") -> None:
+    """Connecte le client de test comme référent base, par le vrai parcours du lien magique."""
+    from app import connexion, db
+    from app.config import config
+
+    with db.session() as s:
+        if connexion.par_email(s, email) is None:
+            connexion.ajouter(s, email)
+        lien = connexion.demander_lien(s, email)
+    reponse = client.get(lien.replace(config.base_url.rstrip("/"), ""), follow_redirects=False)
+    assert reponse.status_code == 303, reponse.text
