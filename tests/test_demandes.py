@@ -5,6 +5,7 @@ import re
 from dataclasses import replace
 
 import pytest
+from conftest import connecter
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
@@ -120,6 +121,7 @@ def test_parcours_complet_par_les_pages(s, besoin):
 
     s.commit()
     with TestClient(app) as client:
+        connecter(client)
         r = client.post(f"/trous/{besoin.id}/demande", follow_redirects=False, data={
             "question": "Quel est le délai d'instruction d'une déclaration préalable ?",
             "destinataire_email": "urba@ville.test", "destinataire_nom": "Référent Urbanisme", "retour": "/trous"})

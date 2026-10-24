@@ -2,6 +2,7 @@
 from datetime import date, datetime, timedelta
 
 import pytest
+from conftest import connecter
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
@@ -138,6 +139,7 @@ def test_pages_verification_fiches_et_parametres(s, base):
     jeton = verifications.jeton_de(v)
     s.commit()
     with TestClient(app) as client:
+        connecter(client)
         page = client.get(f"/v/{jeton}")
         assert "Cette fiche est-elle toujours juste ?" in page.text and "De 9 h à 17 h." in page.text
         assert page.headers["x-robots-tag"] == "noindex, nofollow"

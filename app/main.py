@@ -2,14 +2,16 @@
 import html
 import os
 import re
+from urllib.parse import urlencode
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy import func, select
 
-from . import analyse, db, demo, echeances, export, ingestion, tableau_de_bord, taches
+from . import analyse, connexion, db, demo, echeances, export, ingestion, tableau_de_bord, taches
 from . import fiches as fiches_
 from . import pages_demandes, pages_fiches
 from . import trous as trous_
@@ -25,6 +27,7 @@ async def cycle_de_vie(app: FastAPI):
     db.initialiser()
     with db.session() as s:
         demo.semer_services(s)
+        connexion.semer_premier_referent(s)
     arret = None
     if os.environ.get("NOESE_WORKER_INTEGRE", "1" if not config.database_url else "0") == "1":
         arret = taches.demarrer_en_arriere_plan()
@@ -37,6 +40,30 @@ app = FastAPI(title="Noèse", lifespan=cycle_de_vie, docs_url=None, redoc_url=No
 app.mount("/static", StaticFiles(directory=ICI / "static"), name="static")
 app.include_router(pages_demandes.routeur)
 app.include_router(pages_fiches.routeur)
+
+
+@app.middleware("http")
+async def exiger_connexion(request: Request, call_next):
+    """Les pages du référent base demandent une connexion ; celles des services ont leur propre lien."""
+    if connexion.est_public(request.url.path):
+        request.state.utilisateur = None
+        return await call_next(request)
+    with db.session() as s:
+        u = connexion.utilisateur_de_session(s, request.session)
+        request.state.utilisateur = {"id": u.id, "email": u.email, "nom": u.nom} if u else None
+    if u is None:
+        request.session.pop("utilisateur_id", None)
+        suite = request.url.path + (f"?{request.url.query}" if request.url.query else "")
+        cible = f"/connexion?{urlencode({'suite': suite})}"
+        if request.headers.get("HX-Request"):
+            return Response(status_code=204, headers={"HX-Redirect": cible})
+        return RedirectResponse(cible, status_code=303)
+    return await call_next(request)
+
+
+# La session doit envelopper la vérification de connexion : ajoutée après, elle s'exécute avant.
+app.add_middleware(SessionMiddleware, secret_key=config.secret, session_cookie="noese_session",
+                   max_age=connexion.DUREE_SESSION, same_site="lax", https_only=config.base_url.startswith("https://"))
 
 
 @app.middleware("http")
@@ -56,6 +83,47 @@ async def introuvable(request: Request, exc):
     if detail == "Not Found":
         detail = "L'adresse est peut-être incomplète."
     return page(request, "erreur.html", statut=404, detail=detail)
+
+
+# ------------------------------------------------------------------ connexion
+
+
+@app.get("/connexion", response_class=HTMLResponse)
+def connexion_page(request: Request, suite: str = "/", message: str = ""):
+    with db.session() as s:
+        if connexion.utilisateur_de_session(s, request.session):
+            return RedirectResponse(connexion.suite_sure(suite), status_code=303)
+        aucun = not connexion.referents(s)
+    request.session["suite"] = connexion.suite_sure(suite)
+    return page(request, "connexion.html", etat="formulaire", message=message, aucun_referent=aucun,
+                mode_journal=connexion.mode_journal())
+
+
+@app.post("/connexion", response_class=HTMLResponse)
+def connexion_demander(request: Request, email: str = Form("")):
+    with db.session() as s:
+        lien_dev = connexion.demander_lien(s, email)
+    return page(request, "connexion.html", etat="envoye", email=email.strip(), lien_dev=lien_dev,
+                mode_journal=connexion.mode_journal())
+
+
+@app.get("/connexion/{jeton}")
+def connexion_lien(request: Request, jeton: str):
+    with db.session() as s:
+        u = connexion.consommer(s, jeton)
+        uid = u.id if u else None
+    if uid is None:
+        return page(request, "connexion.html", statut=400, etat="lien_invalide", mode_journal=connexion.mode_journal())
+    suite = connexion.suite_sure(request.session.pop("suite", "/"))
+    request.session.clear()
+    request.session["utilisateur_id"] = uid
+    return RedirectResponse(suite, status_code=303)
+
+
+@app.post("/deconnexion")
+def deconnexion(request: Request):
+    request.session.clear()
+    return RedirectResponse("/connexion?message=deconnecte", status_code=303)
 
 
 # ------------------------------------------------------------------ accueil

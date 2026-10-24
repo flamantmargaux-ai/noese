@@ -24,4 +24,6 @@ gabarits.env.globals["version_statique"] = str(int((ICI / "static/css/noese.css"
 
 def page(request: Request, gabarit: str, /, statut: int = 200, **contexte) -> HTMLResponse:
     courant = "/" + request.url.path.strip("/").split("/")[0] if request.url.path != "/" else "/"
-    return gabarits.TemplateResponse(request, gabarit, {"courant": courant, **contexte}, status_code=statut)
+    utilisateur = getattr(request.state, "utilisateur", None)
+    return gabarits.TemplateResponse(request, gabarit, {"courant": courant, "utilisateur": utilisateur, **contexte},
+                                     status_code=statut)

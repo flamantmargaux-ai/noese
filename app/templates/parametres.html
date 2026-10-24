@@ -6,6 +6,33 @@
 <p class="chapeau">Les services et leurs référents, et le rythme auquel la base est vérifiée.</p>
 {% if message == "fraicheur" %}<div class="message" role="status">Les règles de fraîcheur sont enregistrées. Elles s'appliquent aux prochaines validations et vérifications.</div>{% endif %}
 {% if message == "services" %}<div class="message" role="status">Les services sont enregistrés.</div>{% endif %}
+{% set messages_referents = {"referent_ajoute": "Le référent est ajouté. Il peut se connecter avec son adresse mail.", "referent_existe": "Cette adresse est déjà celle d'un référent.", "referent_retire": "Le référent est retiré. Sa session est fermée."} %}
+{% if message in messages_referents %}<div class="message" role="status">{{ messages_referents[message] }}</div>{% endif %}
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+
+<section class="section" id="referents" aria-labelledby="t-referents">
+  <h2 id="t-referents">Référents de la base</h2>
+  <p>Ils se connectent au Jardinier avec un lien reçu par mail, sans mot de passe. Les services, eux, n'ont pas besoin de compte.</p>
+  <ul class="liste">
+    {% for r in referents %}
+    <li class="ligne">
+      <div>{{ r.nom or r.email }}{% if r.nom %}<div class="meta">{{ r.email }}</div>{% endif %}{% if utilisateur and r.id == utilisateur.id %}<div class="meta">C'est vous.</div>{% endif %}</div>
+      {% if referents|length > 1 %}
+      <form method="post" action="/parametres/referents/{{ r.id }}/retirer">
+        <button class="lien-action" type="submit" aria-label="Retirer {{ r.nom or r.email }}">Retirer</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <form class="carte" method="post" action="/parametres/referents" style="margin-top: var(--espace-s)">
+    <div class="grille-2">
+      <div class="champ"><label for="ref_email">Adresse mail</label><input id="ref_email" name="email" type="email" required autocomplete="off"></div>
+      <div class="champ"><label for="ref_nom">Nom</label><input id="ref_nom" name="nom" type="text" autocomplete="off" aria-describedby="aide-ref-nom"><span class="aide" id="aide-ref-nom">Facultatif.</span></div>
+    </div>
+    <button class="bouton bouton-secondaire" type="submit">Ajouter un référent</button>
+  </form>
+</section>
 
 <section class="section" id="fraicheur" aria-labelledby="t-fraicheur">
   <h2 id="t-fraicheur">Fraîcheur et relances</h2>
@@ -103,14 +130,14 @@
     <caption class="sr-only">Derniers mails</caption>
     <thead><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Destinataire</th><th scope="col">État</th></tr></thead>
     <tbody>
-      {% set types = {"demande": "Demande", "relance": "Relance", "verification": "Vérification", "signalement": "Signalement"} %}
+      {% set types = {"demande": "Demande", "relance": "Relance", "verification": "Vérification", "signalement": "Signalement", "connexion": "Connexion"} %}
       {% for m in mails %}
       <tr>
         <td>{{ m.cree_le|date_fr }}</td>
         <td>{{ types.get(m.type, m.type) }}</td>
         <td>{{ m.destinataire }}</td>
         <td>{% if m.statut == "envoye" %}Envoyé{% elif m.statut == "journal" %}Journalisé{% else %}Échec{% endif %}
-          {% if m.lien %}<br><a href="{{ m.lien }}">Ouvrir le lien</a>{% endif %}</td>
+          {% if m.lien and m.type != "connexion" %}<br><a href="{{ m.lien }}">Ouvrir le lien</a>{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>

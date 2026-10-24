@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from conftest import connecter
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
@@ -82,6 +83,7 @@ def test_pages_liste_detail_et_actions(s):
     g = _jeu(s)
     s.commit()
     with TestClient(app) as client:
+        connecter(client)
         r = client.get("/trous?statut=a_traiter")
         assert r.status_code == 200 and "Délai déclaration préalable" in r.text and "Horaires piscine" not in r.text
         partiel = client.get("/trous?statut=couvert", headers={"HX-Request": "true", "HX-Target": "resultats"})

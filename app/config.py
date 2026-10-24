@@ -35,6 +35,9 @@ class Config:
     llm_stt_model: str = os.environ.get("NOESE_LLM_STT_MODEL", "voxtral-mini-latest")
     embed_dim: int = int(os.environ.get("NOESE_EMBED_DIM", "1024"))
 
+    # Premier référent de la base, créé au démarrage s'il n'existe pas encore.
+    referent_base_email: str = os.environ.get("NOESE_REFERENT_BASE_EMAIL", "")
+
     smtp_host: str = os.environ.get("NOESE_SMTP_HOST", "localhost")
     smtp_port: int = int(os.environ.get("NOESE_SMTP_PORT", "1025"))
     smtp_user: str = os.environ.get("NOESE_SMTP_USER", "")
