@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titre %}Demander au service{% endblock %}
+{% block contenu %}
+<p><a class="retour" href="/trous/{{ g.id }}?retour={{ retour|urlencode }}"><span aria-hidden="true">←</span> Retour au besoin</a></p>
+<p class="surtitre">Demande au service</p>
+<h1 class="titre-2">{{ g.libelle }}</h1>
+<p class="chapeau">Posez une question précise. Le service reçoit un mail avec un lien : il répond en deux minutes, sans compte, puis valide la fiche.</p>
+
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+
+<div class="mise-en-page-detail">
+  <form class="colonne-principale" method="post" action="/trous/{{ g.id }}/demande">
+    <input type="hidden" name="retour" value="{{ retour }}">
+    <div class="champ">
+      <label for="question">Question posée au service</label>
+      <textarea id="question" name="question" rows="4" required aria-describedby="aide-question"
+        {% if not question %}hx-get="/trous/{{ g.id }}/demande/brouillon" hx-trigger="load" hx-swap="innerHTML" hx-indicator="#redaction"{% endif %}>{{ question or "" }}</textarea>
+      <span class="aide" id="aide-question">Proposée par l'IA à partir des questions des habitants. Relisez-la et modifiez-la si besoin.</span>
+      {% if not question %}<span class="aide indicateur" id="redaction" aria-live="polite">Rédaction de la question en cours…</span>{% endif %}
+    </div>
+    <div class="grille-2">
+      <div class="champ">
+        <label for="destinataire_nom">Nom du destinataire</label>
+        <input id="destinataire_nom" name="destinataire_nom" type="text" autocomplete="off"
+               value="{{ destinataire_nom if destinataire_nom is defined else (g.service.referent_nom if g.service else '') }}">
+      </div>
+      <div class="champ">
+        <label for="destinataire_email">Adresse mail du destinataire</label>
+        <input id="destinataire_email" name="destinataire_email" type="email" required autocomplete="off"
+               value="{{ destinataire_email if destinataire_email is defined else (g.service.referent_email if g.service else '') }}"
+               aria-describedby="aide-destinataire">
+        <span class="aide" id="aide-destinataire">{% if g.service %}Référent du service {{ g.service.nom }}. Vous pouvez choisir quelqu'un d'autre.{% else %}Aucun service n'est choisi pour ce besoin.{% endif %}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="bouton bouton-final" type="submit">Envoyer la demande</button>
+      <a class="bouton bouton-secondaire" href="/trous/{{ g.id }}?retour={{ retour|urlencode }}">Annuler</a>
+    </div>
+    <p class="legende" style="margin-top: var(--espace-s)">Ensuite : le service reçoit le mail tout de suite. Sans réponse sous 5 jours ouvrés, nous le relançons doucement.</p>
+  </form>
+
+  <aside class="colonne-actions" aria-label="Ce que verra le service">
+    <div class="carte">
+      <h2 class="titre-3">Ce que verra le service</h2>
+      <p>{{ nb_30j or g.nb }} habitant{{ "s ont" if (nb_30j or g.nb) > 1 else " a" }} posé cette question{% if nb_30j %} ces 30 derniers jours{% endif %}. Par exemple :</p>
+      <ul class="exemples">{% for e in exemples[:4] %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+  </aside>
+</div>
+{% endblock %}

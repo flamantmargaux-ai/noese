@@ -1,0 +1,51 @@
+# docker compose up : base, application, worker et boîte mail de test.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: noese
+      POSTGRES_PASSWORD: noese
+      POSTGRES_DB: noese
+    volumes:
+      - donnees:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U noese"]
+      interval: 3s
+      retries: 20
+
+  app:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment: &env
+      NOESE_DATABASE_URL: postgresql+psycopg://noese:noese@db:5432/noese
+      NOESE_WORKER_INTEGRE: "0"
+      NOESE_SMTP_HOST: mailpit
+      NOESE_SMTP_PORT: "1025"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: .
+    command: ["python", "-m", "app.taches"]
+    env_file:
+      - path: .env
+        required: false
+    environment: *env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Boîte mail de test : les mails envoyés par Noèse s'affichent sur http://localhost:8025.
+  # En production, retirez ce service et renseignez NOESE_SMTP_* dans .env.
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports:
+      - "8025:8025"
+
+volumes:
+  donnees:

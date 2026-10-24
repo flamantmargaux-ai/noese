@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titre %}Choisir les colonnes{% endblock %}
+{% block contenu %}
+<p class="surtitre">Importer</p>
+<h1>Où sont les questions ?</h1>
+<p class="chapeau">Nous n'avons pas reconnu les colonnes de « {{ csv.nom }} ». Indiquez-nous lesquelles utiliser. Seule la colonne des questions est obligatoire.</p>
+<form class="carte" method="post" action="/import/questions" enctype="multipart/form-data" style="max-width: 640px">
+  <input type="hidden" name="csv_texte" value="{{ csv.texte }}">
+  {% for nom, libelle, cle in [("colonne_question", "Question de l'habitant", "question"), ("colonne_date", "Date", "date"), ("colonne_reponse", "Réponse donnée par l'outil", "reponse_donnee"), ("colonne_transfert", "Transfert à un agent (oui ou non)", "transfere")] %}
+  <div class="champ">
+    <label for="{{ nom }}">{{ libelle }}</label>
+    <select id="{{ nom }}" name="{{ nom }}" {% if cle == "question" %}required{% endif %}>
+      <option value="">{{ "Choisissez une colonne" if cle == "question" else "Aucune" }}</option>
+      {% for e in csv.entetes %}<option value="{{ e }}" {% if csv.devine[cle] == e %}selected{% endif %}>{{ e }}</option>{% endfor %}
+    </select>
+  </div>
+  {% endfor %}
+  <div class="actions">
+    <button class="bouton" type="submit">Importer les questions</button>
+    <a class="bouton bouton-secondaire" href="/import">Annuler</a>
+  </div>
+</form>
+{% endblock %}

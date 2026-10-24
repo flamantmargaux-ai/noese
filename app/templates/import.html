@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block titre %}Importer{% endblock %}
+{% block contenu %}
+<p class="surtitre">Importer</p>
+<h1>Ce que vos habitants demandent</h1>
+<p class="chapeau">Déposez les questions de vos habitants et ce que votre base sait déjà. Nous regroupons les questions par besoin, puis nous vérifions si la base y répond.</p>
+
+{% if message == "aucune" %}
+<div class="message" role="alert">Nous n'avons rien trouvé à importer. Vérifiez le format du fichier : CSV, .eml, .mbox, PDF, Markdown ou texte.</div>
+{% endif %}
+
+{% if nb_questions == 0 and nb_documents == 0 %}
+<div class="carte-filet" style="margin-bottom: var(--espace-m)">
+  <h2 class="titre-3">Vous voulez d'abord essayer ?</h2>
+  <p>Chargez Ville-Exemple, une commune fictive de 45&#8239;000 habitants : 32 pages de site et 309 questions d'habitants. L'analyse prend quelques minutes.</p>
+  <form method="post" action="/import/demo"><button class="bouton bouton-secondaire" type="submit">Charger les données de démo</button></form>
+</div>
+{% endif %}
+
+<div class="grille-2">
+  <form class="carte" method="post" action="/import/questions" enctype="multipart/form-data">
+    <h2 class="titre-3">Questions des habitants</h2>
+    <p class="legende">Déjà importées : {{ nb_questions|nombre }}</p>
+    <div class="champ">
+      <label for="fichiers-questions">Fichiers</label>
+      <input id="fichiers-questions" name="fichiers" type="file" multiple accept=".csv,.tsv,.eml,.mbox,.txt" aria-describedby="aide-fichiers-questions">
+      <span class="aide" id="aide-fichiers-questions">Export de votre chatbot ou callbot en CSV (date, question, réponse donnée, transfert), ou mails en .eml ou .mbox.</span>
+    </div>
+    <div class="ou">ou</div>
+    <div class="champ">
+      <label for="collage">Copier-coller</label>
+      <textarea id="collage" name="collage" aria-describedby="aide-collage"></textarea>
+      <span class="aide" id="aide-collage">Une question par ligne.</span>
+    </div>
+    <button class="bouton" type="submit">Importer les questions</button>
+  </form>
+
+  <form class="carte" method="post" action="/import/documents" enctype="multipart/form-data">
+    <h2 class="titre-3">Base existante</h2>
+    <p class="legende">Déjà importés : {{ nb_documents|nombre }} documents</p>
+    <div class="champ">
+      <label for="url">Adresse du site de la ville</label>
+      <input id="url" name="url" type="url" inputmode="url" placeholder="https://www.ville.fr" aria-describedby="aide-url">
+      <span class="aide" id="aide-url">Nous lisons les pages de ce site uniquement, jusqu'à 200 pages.</span>
+    </div>
+    <div class="ou">ou</div>
+    <div class="champ">
+      <label for="fichiers-base">Documents</label>
+      <input id="fichiers-base" name="fichiers" type="file" multiple accept=".pdf,.md,.markdown,.txt,.json,.csv" aria-describedby="aide-fichiers-base">
+      <span class="aide" id="aide-fichiers-base">PDF, Markdown ou texte. Ou un export Noèse (Markdown, JSON ou CSV) : ses fiches validées sont reprises telles quelles.</span>
+    </div>
+    <button class="bouton" type="submit">Importer la base</button>
+  </form>
+</div>
+
+<section class="section" aria-labelledby="titre-suivi">
+  <h2 id="titre-suivi">Suivi de l'analyse</h2>
+  {% include "_suivi.html" %}
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Noèse{% endblock %} · état de l'art</title>
+  <link rel="preload" href="/static/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/noese.css?v={{ version_statique }}">
+  <script src="/static/js/htmx.min.js" defer></script>
+</head>
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+  <header class="entete">
+    <div class="conteneur">
+      <a class="marque" href="/" aria-label="état de l'art, Noèse : accueil">
+        <span class="logo" aria-hidden="true"><span class="logo-e">e</span>tat de l'art</span>
+        <span class="produit" aria-hidden="true">Noèse</span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        {% set liens = [("/", "Accueil"), ("/import", "Importer"), ("/trous", "Trous"), ("/fiches", "Fiches"), ("/parametres", "Paramètres")] %}
+        {% for href, nom in liens %}
+        <a href="{{ href }}"{% if courant == href %} aria-current="page"{% endif %}>{{ nom }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  </header>
+  <main id="contenu" tabindex="-1">
+    <div class="conteneur">
+      {% block contenu %}{% endblock %}
+    </div>
+  </main>
+  <footer class="pied">
+    <div class="conteneur">Noèse, un outil du Lab état de l'art. Logiciel libre sous licence EUPL 1.2.</div>
+  </footer>
+</body>
+</html>

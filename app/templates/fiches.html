@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titre %}Fiches{% endblock %}
+{% block contenu %}
+<p class="surtitre">Fiches</p>
+<h1>La base validée</h1>
+<p class="chapeau">Chaque fiche a un service propriétaire et une date de vérification. Avant l'échéance, nous demandons au service si elle est toujours juste.</p>
+
+<form id="filtres" class="filtres" method="get" action="/fiches" role="search" aria-label="Filtrer les fiches"
+      hx-get="/fiches" hx-target="#resultats" hx-push-url="true"
+      hx-trigger="change, input changed delay:300ms from:#recherche">
+  <div>
+    <label for="filtre-service">Service propriétaire</label>
+    <select id="filtre-service" name="service">
+      <option value="">Tous les services</option>
+      {% for sv in services %}<option value="{{ sv.id }}" {% if filtres.service == sv.id|string %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}
+      <option value="aucun" {% if filtres.service == "aucun" %}selected{% endif %}>Sans propriétaire</option>
+    </select>
+  </div>
+  <div>
+    <label for="recherche">Rechercher</label>
+    <input id="recherche" name="q" type="search" value="{{ filtres.q }}" placeholder="cantine, déclaration préalable…" autocomplete="off">
+  </div>
+  <noscript><button class="bouton bouton-secondaire" type="submit">Filtrer</button></noscript>
+</form>
+<div id="resultats">{% include "_fiches_liste.html" %}</div>
+{% endblock %}

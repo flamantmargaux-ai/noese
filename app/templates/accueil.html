@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titre %}Accueil{% endblock %}
+{% block contenu %}
+<p class="surtitre">Le Jardinier</p>
+<h1>Votre base de connaissances</h1>
+{% if bilan.questions == 0 %}
+  <div class="vide">
+    {% include "_illustration.html" %}
+    <div>
+      <p class="chapeau">Aucun trou pour l'instant. Importez les questions de vos habitants pour voir ce que votre base ne sait pas encore.</p>
+      {% if en_cours %}<p>Une analyse est en cours. <a href="/import">Suivre l'analyse</a></p>
+      {% else %}<a class="bouton" href="/import">Importer des questions</a>{% endif %}
+    </div>
+  </div>
+{% else %}
+  <p class="chapeau">Sur les {{ bilan.questions|nombre }} questions importées, voici ce que la base sait et ce qu'elle ne sait pas encore.</p>
+  <div class="chiffres">
+    <div class="chiffre"><span class="valeur">{{ c.taux_couverture }}&#8239;%</span><span class="intitule">des questions des habitants ont une réponse dans la base</span></div>
+    <div class="chiffre"><span class="valeur"><a class="valeur-lien" href="/trous">{{ c.trous_ouverts }}</a></span><span class="intitule">trou{{ "s" if c.trous_ouverts > 1 }} ouvert{{ "s" if c.trous_ouverts > 1 }}, dont {{ c.partiel }} partiel{{ "s" if c.partiel > 1 }}</span></div>
+    <div class="chiffre"><span class="valeur"><a class="valeur-lien" href="/fiches?fraicheur=perimee">{{ c.perimees }}</a></span><span class="intitule">fiche{{ "s" if c.perimees > 1 }} périmée{{ "s" if c.perimees > 1 }}</span></div>
+    <div class="chiffre"><span class="valeur">{{ delai }}</span><span class="intitule">{% if c.nb_reponses %}jour{{ "s" if c.delai_median >= 2 }} ouvré{{ "s" if c.delai_median >= 2 }} : délai médian de réponse des services, sur {{ c.nb_reponses }} réponse{{ "s" if c.nb_reponses > 1 }}{% else %}délai médian de réponse des services, dès les premières réponses{% endif %}</span></div>
+  </div>
+  {% if signales %}
+  <section class="section" aria-labelledby="titre-suivre">
+    <h2 id="titre-suivre">À suivre</h2>
+    <p class="legende">Ces services n'ont pas répondu, malgré une relance. Un appel ou un mot de vive voix fait souvent avancer les choses.</p>
+    <ul class="liste">
+      {% for x in signales %}
+      <li class="ligne">
+        <div><a href="{{ x.lien }}">{{ x.titre }}</a><div class="meta">{{ x.nature }} · {{ x.qui }} · depuis le {{ x.depuis|date_fr }}</div></div>
+        <span class="statut"><span class="pastille pastille-partiel"></span>Signalé</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+  <section class="section" aria-labelledby="titre-prioritaires">
+    <h2 id="titre-prioritaires">Trous prioritaires</h2>
+    <p class="legende">Classés par nombre de questions d'habitants.</p>
+    <ul class="liste">
+      {% for g in trous %}
+      <li class="ligne">
+        <div><a href="/trous/{{ g.id }}">{{ g.libelle }}</a><div class="meta">{{ g.service.nom if g.service else "Service à choisir" }} · {{ g.nb }} question{{ "s" if g.nb > 1 }}</div></div>
+        <span class="statut"><span class="pastille pastille-{{ g.verdict }}"></span>{{ VERDICTS[g.verdict] }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="section"><a class="bouton" href="/trous">Voir tous les trous</a></p>
+  </section>
+
+  {% if services %}
+  <section class="section" aria-labelledby="titre-services">
+    <h2 id="titre-services">Où un coup de main serait utile</h2>
+    <p class="legende">Ce tableau sert à savoir où proposer de l'aide, pas à comparer les services. Un service avec beaucoup de besoins est souvent celui que les habitants sollicitent le plus.</p>
+    <div class="tableau-defilant">
+    <table>
+      <caption class="sr-only">Besoins à traiter et contributions par service</caption>
+      <thead><tr>
+        <th scope="col">Service</th>
+        <th scope="col" class="nombre">Besoins à traiter</th>
+        <th scope="col" class="nombre">Demandes en cours</th>
+        <th scope="col" class="nombre">Fiches apportées</th>
+        <th scope="col" class="nombre">Délai de réponse</th>
+      </tr></thead>
+      <tbody>
+        {% for l in services %}
+        <tr>
+          <th scope="row" style="font: inherit; text-transform: none; letter-spacing: 0; color: var(--encre)"><a href="/trous?service={{ l.service.id }}">{{ l.service.nom }}</a></th>
+          <td class="nombre">{{ l.a_traiter }}</td>
+          <td class="nombre">{{ l.demandes_en_cours }}</td>
+          <td class="nombre">{{ l.fiches }}</td>
+          <td class="nombre">{{ formuler_delai(l.delai) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </section>
+  {% endif %}
+{% endif %}
+{% endblock %}

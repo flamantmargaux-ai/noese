@@ -1,0 +1,32 @@
+{% set base_url = "/fiches?service=" ~ (filtres.service|urlencode) ~ "&q=" ~ (filtres.q|urlencode) %}
+<input type="hidden" name="fraicheur" value="{{ filtres.fraicheur }}" form="filtres">
+<nav class="onglets" aria-label="Fraîcheur">
+  {% for cle, nom in FRAICHEURS.items() %}
+  <a href="{{ base_url }}&fraicheur={{ cle }}" hx-get="{{ base_url }}&fraicheur={{ cle }}" hx-target="#resultats" hx-push-url="true"
+     {% if filtres.fraicheur == cle %}aria-current="page"{% endif %}>{{ nom }} <span class="compte">{{ comptes[cle] }}</span></a>
+  {% endfor %}
+</nav>
+<p class="legende" role="status">{% if lignes %}{{ lignes|length }} fiche{{ "s" if lignes|length > 1 }}.{% else %}Aucune fiche ne correspond à ces filtres.{% endif %}</p>
+{% if lignes %}
+<ul class="liste">
+  {% for l in lignes %}
+  <li class="ligne">
+    <div>
+      <a class="titre-ligne" href="/fiches/{{ l.fiche.id }}">{{ l.version.titre }}</a>
+      <div class="meta">
+        {{ l.service or "Sans propriétaire" }} ·
+        {% if l.fraicheur == "archivee" %}retirée
+        {% elif l.fiche.perime_le %}à vérifier le {{ l.fiche.perime_le|date_fr }}{% endif %}
+        {% if l.verification %} · vérification demandée le {{ l.verification.envoyee_le|date_fr }}{% endif %}
+      </div>
+    </div>
+    {% with etat=l.fraicheur %}{% include "_fraicheur.html" %}{% endwith %}
+  </li>
+  {% endfor %}
+</ul>
+{% elif filtres.fraicheur == "toutes" and not filtres.q and not filtres.service %}
+<div class="vide">
+  {% include "_illustration.html" %}
+  <p class="chapeau">Aucune fiche pour l'instant. Les fiches arrivent quand un service répond à une demande et la valide. Commencez par les trous prioritaires.</p>
+</div>
+{% endif %}

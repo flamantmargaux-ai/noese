@@ -1,0 +1,1238 @@
+[
+ {
+  "texte": "Bonjour, je cherche à louer la salle des fêtes pour un événement privé, pouvez-vous me donner les tarifs et les conditions ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "je dois inscrire mon enfant en garderie périscolaire pour l’année prochaine, vous auriez les tarifs pour le matin, le soir et l’étude ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "Les horaires de la garderie du matin changent-ils pendant les vacances scolaires ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "bjr j'emménage, quel jour passe le camion poubelle ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "Je veux construire une piscine mais j’ai peur des démarches, est-ce que c’est obligatoire ?",
+  "intention": "H05"
+ },
+ {
+  "texte": "bjr je voudrais savoir si je peux tonder ma pelouse après 22h c'est possible ou pas svp ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "Quels sont les tarifs pour la carte de stationnement résidant ? Je veux pas me tromper sur le prix.",
+  "intention": "C20"
+ },
+ {
+  "texte": "Comment savoir si mon terrain est constructible ? J'ai entendu parler du PLU mais je ne comprends pas comment l'utiliser.",
+  "intention": "H04"
+ },
+ {
+  "texte": "je cherche à savoir si mon enfant peut manger à la cantine le mercredi, car il n'y a pas d'école ce jour-là",
+  "intention": "C08"
+ },
+ {
+  "texte": "Je viens de changer d’adresse et je veux mettre à jour mon inscription électorale, comment faire ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "mon enfant a 6 ans, à quelle heure commence la garderie du matin ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "bjr je dois inscrire mon petit de 3 ans à la maternelle mais jsp comment faire pour la carte scolaire svp",
+  "intention": "C13"
+ },
+ {
+  "texte": "svp aide pour les délais déclaration préalable pour changement de fenêtres",
+  "intention": "H01"
+ },
+ {
+  "texte": "Bonjour, je cherche les horaires d’ouverture de la mairie, notamment pour le samedi. Est-ce qu’elle ouvre ce jour-là ?",
+  "intention": "C27"
+ },
+ {
+  "texte": "quand faut faire la demande pour une place en crèche ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "salut je dois voter mais je serai absent, je veux savoir où je dois me rendre pour faire une procuration",
+  "intention": "C06"
+ },
+ {
+  "texte": "je dois jeter des meubles lourds, je dois obligatoirement avoir un badge ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "bjr je cherche une place en crèche pour mon enfant de 2 ans, c possible de faire une demande en ligne ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "les sacs pour les tontes sont plus chers cette année ? jsp pourquoi",
+  "intention": "C18"
+ },
+ {
+  "texte": "je cherche à savoir si les places sont encore dispo pour le mercredi après-midi pour mon gamin de 5 ans",
+  "intention": "C12"
+ },
+ {
+  "texte": "Bonjour, je cherche les tarifs de la garderie périscolaire pour mon enfant de 6 ans en 2026 : matin, soir et étude, vous auriez les infos ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "jsp si je peux déposer mes gravats sans badge ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "Je veux me débarrasser d'un vieux canapé, est-ce que c'est possible de le déposer en déchetterie ou faut-il un rendez-vous ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "bjr je dois faire une procuration pour voter aux prochaines élections mais jsp comment faire svp",
+  "intention": "C06"
+ },
+ {
+  "texte": "Bonjour, je souhaitais savoir si les inscriptions pour les centres de loisirs pendant les vacances de la Toussaint sont déjà ouvertes ? Mon enfant a 7 ans.",
+  "intention": "C12"
+ },
+ {
+  "texte": "je veux savoir si je peux réserver des repas pour mon enfant pendant les jours de grève des enseignants ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "J’ai perdu ma carte de médiathèque, comment je peux me réinscrire et récupérer une nouvelle carte ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "un truc de ouf sur la route près du parc, un trou mon vélo a failli s'écraser, faut faire quelque chose au plus vite",
+  "intention": "C21"
+ },
+ {
+  "texte": "jsp si je peux faire un ravalement sans déclaration ou si faut obligatoirement en faire une",
+  "intention": "H01"
+ },
+ {
+  "texte": "salut je cherche à savoir si je dois faire une déclaration pour une piscine dans mon jardin svp",
+  "intention": "H05"
+ },
+ {
+  "texte": "pacs mairie ou chez notaire ? lequel est le moins cher ?",
+  "intention": "C04"
+ },
+ {
+  "texte": "ramassage encombrants quand c'est possible ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "j’ai vu un dossier de pc à remplir en ligne mais jsp où exactement je dois le déposer ? sur le site de la mairie ou en physique ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "Je cherche une aide alimentaire pour mon enfant de 6 ans, est-ce que le CCAS peut m'aider ?",
+  "intention": "C28"
+ },
+ {
+  "texte": "mon enfant est dans le secteur de l'école X mais on veut absolument qu'il aille à l'école Y à cause des copains comment on fait pour une dérogation ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "Mairie ouverte samedi ? J’ai besoin de passer un truc ce week-end",
+  "intention": "C27"
+ },
+ {
+  "texte": "Mon ravalement de maison est-il soumis à déclaration préalable ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "Je veux savoir si on peut étendre ma concession familiale au cimetière, et à quel prix ?",
+  "intention": "C29"
+ },
+ {
+  "texte": "bjr je veux un acte de naissance pour ma fille de 10 ans mais jsp comment faire svp",
+  "intention": "C02"
+ },
+ {
+  "texte": "je cherche les prix de la garderie périscolaire pour mon enfant de 4 ans en 2026, vous pouvez me donner les tarifs pour le matin, le soir et l’étude ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "ma carte de résidant est périmée depuis 3 mois, je veux la renouveler. Quel est le prix et où je dois passer ?",
+  "intention": "C20"
+ },
+ {
+  "texte": "je veux installer une véranda de 15m2, faut il une déclaration ? et quel délai pour l'instruction ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "salut je suis nouveau dans la ville et je veux savoir comment faire pour inscrire mon enfant au centre de loisirs pendant les vacances de Noël, j’ai besoin d’aide",
+  "intention": "C12"
+ },
+ {
+  "texte": "je veux faire une procuration pour voter mais j'ai peur de me tromper dans les infos à donner, tu peux m'aider ?",
+  "intention": "C06"
+ },
+ {
+  "texte": "Je veux faire un passeport pour voyager en été, quel délai pour l’avoir ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "bjr je veux faire un pacs avec mon conjoint mais jsp comment faire en mairie ?",
+  "intention": "C04"
+ },
+ {
+  "texte": "les sacs pour les tontes sont ils fournis par la mairie ou à acheter ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "mon terrain est dans la zone u ou dans la zone a ? je veux être sûr avant de faire quoi que ce soit",
+  "intention": "H04"
+ },
+ {
+  "texte": "Les horaires de la déchèterie sont ils modifiés pendant les vacances scolaires ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "j’ai perdu les infos sur les pièces à fournir pour le pc, pouvez vous me les envoyer par mail ? mon adresse est [email fictif]@ville-exemple.fr",
+  "intention": "H02"
+ },
+ {
+  "texte": "je cherche un potager partagé près de chez moi mais j’ai pas les moyens de construire un truc tout seul, c’est possible de louer juste un espace sans avoir à tout monter ?",
+  "intention": "H09"
+ },
+ {
+  "texte": "je suis nouveau dans la ville et j'ai besoin d'un extrait d'acte de naissance pour mon mariage, mais je ne trouve pas les infos sur le site de la mairie, aidez-moi",
+  "intention": "C02"
+ },
+ {
+  "texte": "Est-ce qu’on peut construire une piscine sans rien demander ?",
+  "intention": "H05"
+ },
+ {
+  "texte": "jsp si je peux encore souscrire à la mutuelle communale, j'ai raté le délai au début de l'année",
+  "intention": "H10"
+ },
+ {
+  "texte": "mon voisin a fait une demande il y a 3 mois et il a eu sa réponse en 2 mois. Moi j’ai commencé il y a 1 mois et jsp pourquoi ça traîne autant ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "salut j'ai perdu mon conjoint il y a 5 ans et je dois renouveler la place au cimetière mais j'ai plus les infos du contrat c comment faire ?",
+  "intention": "C29"
+ },
+ {
+  "texte": "j’ai un problème avec l’inscription de mon enfant au centre de loisirs, j’ai rempli le formulaire mais j’ai pas reçu de confirmation, c’est normal ?",
+  "intention": "C12"
+ },
+ {
+  "texte": "J'aimerais savoir si les horaires de la déchèterie ont changé cette année ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "J’ai vu que mon voisin a une piscine sans rien dire à la mairie, est-ce que c’est légal ?",
+  "intention": "H05"
+ },
+ {
+  "texte": "j'ai besoin des infos sur l'étude surveillée pour mon enfant en 6ème, c'est ouvert tous les soirs ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "bjr j'ai perdu mes clés devant la mairie hier et jsp où les déposer ?",
+  "intention": "C25"
+ },
+ {
+  "texte": "médiathèque ouverte ce week-end ? et comment je m’inscris en ligne ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "Bonjour, je suis nouveau dans la ville et je voudrais connaître les menus de la cantine scolaire pour mon enfant. Est-ce qu’il y a des options sans gluten ou végétariennes ?",
+  "intention": "C10"
+ },
+ {
+  "texte": "J’ai besoin d’une carte d’identité pour mon permis de conduire, quelles sont les pièces à fournir ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "mon fils a 16 ans et il a oublié de se faire recenser, il est trop tard pour le faire maintenant ?",
+  "intention": "C07"
+ },
+ {
+  "texte": "recensement citoyen à 16 ans c’est obligatoire ? et si je rate le délai ?",
+  "intention": "C07"
+ },
+ {
+  "texte": "Comment faire pour un matelas ? J'ai vu qu'il fallait un RDV mais jsp comment faire le RDV",
+  "intention": "C16"
+ },
+ {
+  "texte": "bjr je veux savoir le prix de la garderie périscolaire pour mon enfant en 2026 c pour le matin le soir et l étude svp",
+  "intention": "H06"
+ },
+ {
+  "texte": "mon bac poubelle est cassé depuis 2 semaines, jsp si je peux en avoir un nouveau svp",
+  "intention": "C19"
+ },
+ {
+  "texte": "acte de naissance pour un enfant né à Ville-Exemple en 2015, je dois le fournir pour une demande de passeport, comment procéder ?",
+  "intention": "C02"
+ },
+ {
+  "texte": "acte de naissance pour un enfant né en 2018, je dois le faire pour l'école, comment faire ?",
+  "intention": "C02"
+ },
+ {
+  "texte": "mon gamin va avoir 4 ans en mars et je veux l'inscrire en petite section mais la carte scolaire c'est pas possible pour nous c comment on fait ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "mon conjoint est étranger, il faut des papiers en plus ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "cantineschool : mon enfant a un régime alimentaire particulier (allergie aux noix), comment je fais pour que ce soit respecté ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "les règles pour le bruit sont les mêmes en semaine et le week-end ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "j'ai vu que pour les murs il faut une déclaration préalable, mais pour une clôture en lattis c'est pareil ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "est-ce que la cantine scolaire fonctionne le mercredi ?",
+  "intention": "C08"
+ },
+ {
+  "texte": "j'ai égaré mon portefeuille dans le bus hier soir, comment je fais pour le récupérer ?",
+  "intention": "C25"
+ },
+ {
+  "texte": "Est-ce que les tarifs de la cantine vont augmenter en 2026 ? Je veux vérifier avant de faire les démarches pour mon enfant.",
+  "intention": "H07"
+ },
+ {
+  "texte": "j'ai plus de quoi manger et je galère avec les factures... jsp où me tourner ?",
+  "intention": "C28"
+ },
+ {
+  "texte": "je veux savoir si je peux payer les repas en ligne ou si faut venir en mairie ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "prix cantine 2026-2027 augmentation ? mon fils est en primaire et je veux savoir si je dois prévoir plus dans mon budget",
+  "intention": "H07"
+ },
+ {
+  "texte": "bjr je veux me marier à la mairie mais jsp comment faire pour monter mon dossier ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "Bonjour, je souhaiterais savoir si le CCAS propose une aide pour payer les factures d'électricité ? J'ai des retards de paiement depuis quelques semaines.",
+  "intention": "C28"
+ },
+ {
+  "texte": "piscine municipale prix abonnement famille ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "Je dois faire une carte d’identité pour mon enfant de 12 ans. Quelles sont les démarches ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "salut je veux louer la salle pour un mariage mais jsp si c'est possible en hiver, vous avez des prix ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "Mon enfant a été malade hier, je dois annuler les repas pour aujourd'hui et demain, comment faire ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "piscine municipale fermée aujourd'hui ? ou les horaires sont normaux ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "bjr je veux inscrire mon fils de 6 ans au centre de loisirs pour les vacances de juillet mais jsp comment faire svp",
+  "intention": "C12"
+ },
+ {
+  "texte": "Comment s’inscrire pour un PACS en mairie ? J’ai besoin des étapes précises.",
+  "intention": "C04"
+ },
+ {
+  "texte": "jsp comment faire pour avoir les menus de la cantine ?",
+  "intention": "C10"
+ },
+ {
+  "texte": "je veux faire un ravalement de façade mais je veux savoir si c'est une déclaration ou un permis de construire",
+  "intention": "H01"
+ },
+ {
+  "texte": "Comment je peux établir une procuration pour aller voter à ma place ?",
+  "intention": "C06"
+ },
+ {
+  "texte": "déroger carte scolaire maternelle : y a t-il des critères de priorité ? (ex : fratrie, distance, etc.)",
+  "intention": "C13"
+ },
+ {
+  "texte": "bjr je veux savoir si mon gamin peut manger à la cantine le mercredi ?",
+  "intention": "C08"
+ },
+ {
+  "texte": "je veux faire poser des volets mais je veux savoir si c'est une déclaration ou pas",
+  "intention": "H01"
+ },
+ {
+  "texte": "bjr je veux louer la salle des fêtes pour un mariage en juin, vous avez des tarifs ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "bjr je veux savoir si la mairie est ouverte ce samedi ?",
+  "intention": "C27"
+ },
+ {
+  "texte": "je veux un acte de naissance pour mon fils mais je n'ai pas son acte de naissance à moi, comment faire ?",
+  "intention": "C02"
+ },
+ {
+  "texte": "bjr je veux savoir les horaires de la déchèterie svp c'est ouvert ce week end ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "Les horaires de la garderie du soir sont ils les memes que ceux de la maternelle ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "bjr je voudrais savoir les menus de la cantine pour la semaine prochaine c'est possible svp ?",
+  "intention": "C10"
+ },
+ {
+  "texte": "Est-ce qu’on peut encore s’inscrire pour louer un carré dans les potagers partagés cette année ? Les dates limites sont où ?",
+  "intention": "H09"
+ },
+ {
+  "texte": "mon voisin a mis ses déchets verts dans la rue hier, c’est autorisé ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "Comment obtenir un extrait d'acte de naissance pour mon grand-père décédé il y a 20 ans ? Je dois le fournir pour une succession.",
+  "intention": "C02"
+ },
+ {
+  "texte": "j’ai vu l’affiche mais j’ai pas compris si c’était gratuit ou pas ? svp",
+  "intention": "C26"
+ },
+ {
+  "texte": "bjr je veux m’inscrire à la médiathèque mais jsp comment faire ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "je veux faire un abri de jardin de 2m50 de haut, c'est possible sans dérogation ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "Comment ça marche pour s’inscrire au centre de loisirs pendant les vacances scolaires ? Mon enfant a 8 ans et je veux qu’il participe aux activités.",
+  "intention": "C12"
+ },
+ {
+  "texte": "Est-ce que les horaires pour tondre la pelouse changent selon les jours de la semaine ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "salut ! je veux savoir si je peux garder ma mutuelle communale même si je déménage dans une autre ville mais toujours dans le département",
+  "intention": "H10"
+ },
+ {
+  "texte": "salut je veux réserver des repas pour mon gamin pendant les vacances d'été c possible ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "bjr je suis retraité et j'ai entendu parler d'une mutuelle proposée par la mairie, c'est vrai ? comment ça marche ?",
+  "intention": "H10"
+ },
+ {
+  "texte": "Pouvelle cassée, je veux un remplacemant c’est pas normal d’attendre",
+  "intention": "C19"
+ },
+ {
+  "texte": "inscription maternelle dérogation carte scolaire : quels documents faut-il fournir ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "les tarifs de la garderie périscolaire pour 2026 c’est combien ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "est ce que la garderie du soir est obligatoire pour les enfants de primaire ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "Je suis en déplacement le jour du vote, comment je fais pour que mon pote vote à ma place ?",
+  "intention": "C06"
+ },
+ {
+  "texte": "ramassage encombrants ce week-end possible ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "bjr je cherche à savoir si mon terrain est constructible dans mon secteur ? jsp comment faire pour vérifier sur le plu ?",
+  "intention": "H04"
+ },
+ {
+  "texte": "Comment faire pour renouveler ma carte d’identité en ligne ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "les jours de collecte pour le bac gris et jaune en ce moment ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "Est-ce que la mairie ouvre le samedi ? J’ai besoin de savoir pour demain",
+  "intention": "C27"
+ },
+ {
+  "texte": "J’ai un rdv pour ma carte d’identité mais j’ai un empêchement, comment annuler ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "svp aide pour un lampadaire qui ne marche plus rue des Tilleuls, côté impair, c'est un peu flippant la nuit",
+  "intention": "C21"
+ },
+ {
+  "texte": "j’ai besoin d’un délai estimé pour un permis de construire pour une maison individuelle, c’est combien de temps en général ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "Comment faire une demande de dérogation pour inscrire mon enfant à l'école du quartier plutôt que celle de secteur ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "je veux pas payer pour les sacs, y’a pas moyen de les récupérer gratuitement ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "J’ai perdu mes clés devant le supermarché, où les déposer ?",
+  "intention": "C25"
+ },
+ {
+  "texte": "salut je veux dérogation pour l'école de mon boulot mais jsp si c possible ou pas et les délais c'est quoi ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "Salut, est-ce que la mairie est ouverte samedi matin ou juste l’après-midi ?",
+  "intention": "C27"
+ },
+ {
+  "texte": "bjr je suis dans une galère avec mes factures d'électricité, jsp comment faire pour avoir de l'aide ?",
+  "intention": "C28"
+ },
+ {
+  "texte": "Quels sont les délais pour une déclaration préalable de travaux pour une véranda de 20m2 ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "je déménage et je dois vider mon appartement, j'ai besoin des horaires de la déchèterie et des infos pour le badge",
+  "intention": "C17"
+ },
+ {
+  "texte": "j’ai perdu mon justificatif de domicile et je kiffais pas devoir tout refaire pour m’inscrire, y’a pas une solution ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "Bonjour, je souhaiterais savoir si les demandes de places en crèche sont ouvertes toute l’année ou s’il y a des périodes précises ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "ramassage déchets verts : les dates changent tous les ans ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "les tarifs pour les cours de natation à la piscine municipale sont ils inclus dans l'abonnement ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "Mon canapé est trop gros pour le mettre à la poubelle, que faire ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "je veux construire une véranda, est-ce que c’est un permis de construire ou une simple déclaration préalable ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "j'ai vu un camion hier mais pas mon bac, pourquoi ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "je veux faire une demande en ligne mais le site de la mairie est trop compliqué, jsp comment faire pour déposer mon dossier ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "ramassage déchets verts : quand est-ce que ça commence en 2024 ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "bjr je déménage dans la ville et jsp comment je fais pour être sur les listes électorales avant les prochaines élections ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "jvoudrais savoir le prix pour louer la salle des fêtes pour un mariage svp, et si c’est possible pour 20 personnes ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "jsp où je peux trouver les horaires de l'étude surveillée pour mon fils en cm1",
+  "intention": "C11"
+ },
+ {
+  "texte": "je veux faire des travaux chez moi mais je veux éviter les conflits avec les voisins, quels sont les horaires max ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "salut je veux savoir le prix de la garderie périscolaire pour mon gamin en 2026, c’est combien pour le matin et le soir ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "Est-ce qu’il y a des tarifs réduits pour les familles nombreuses pour les centres de loisirs pendant les vacances ?",
+  "intention": "C12"
+ },
+ {
+  "texte": "bjr je suis bloqué sur mon trajet pour aller au travail à cause d'un gros trou dans la route près de la place du marché, c'est dangereux svp",
+  "intention": "C21"
+ },
+ {
+  "texte": "bjr jsp si je peux avoir un nouveau bac poubelle mon ancien a été volé hier",
+  "intention": "C19"
+ },
+ {
+  "texte": "Jsp où je peux faire mon passeport, au guichet ou en ligne ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "pacs en mairie c’est possible sans avocat ?",
+  "intention": "C04"
+ },
+ {
+  "texte": "bjr je voudrais inscrire mon fils de 6 ans à la cantine scolaire svp, jsp comment faire ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "Les bruits de bricolage sont autorisés jusqu'à quelle heure le week-end ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "je veux un extrait d'acte de naissance mais je ne sais pas si je dois demander un acte avec ou sans filiation, tu peux m'expliquer ?",
+  "intention": "C02"
+ },
+ {
+  "texte": "salut je suis dans la merde avec mes factures d'electricité qui sont impayées depuis 3 mois, j'ai besoin d'aide c'est urgent",
+  "intention": "C28"
+ },
+ {
+  "texte": "j'ai un gros tas de vieux matelas à jeter, j'ai besoin d'un badge pour la déchèterie, comment je fais ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "j’ai vu sur le site qu’il y avait une mutuelle communale, mais je suis en arrêt maladie depuis 2 mois, ça change quelque chose pour moi ?",
+  "intention": "H10"
+ },
+ {
+  "texte": "bjr je veux faire ma carte d'identité mais jsp comment faire pour avoir un rdv ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "les délais pour un mariage en mairie c’est combien de temps en général ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "rdv pour carte d’identité c’est possible ce mois-ci ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "bjr je veux faire une extension sur ma maison mais jsp quels papiers il faut fournir pour le permis de construire ?",
+  "intention": "H02"
+ },
+ {
+  "texte": "J’ai bougé il y a 3 mois et je me suis rendu compte que mon adresse sur les listes électorales est toujours celle d’avant. Que faire ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "je veux inscrire mon gamin en crèche mais jsp comment ni quand faire la demande... aidez moi svp",
+  "intention": "C14"
+ },
+ {
+  "texte": "j'ai oublié de voter et je veux que mon conjoint vote à ma place, comment on fait pour ça ?",
+  "intention": "C06"
+ },
+ {
+  "texte": "j’ai tout mes papiers mais je veux être sûr que j’ai rien oublié pour le mariage. quelles sont les pièces obligatoires ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "j’ai vu que les inscriptions pour les centres de loisirs étaient ouvertes mais je veux savoir si mon enfant de 4 ans peut y aller ou si c’est réservé aux plus grands",
+  "intention": "C12"
+ },
+ {
+  "texte": "je suis étudiant et je veux emprunter des livres pour mes révisions, comment je fais pour m’inscrire ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "bjr je pars en vacances la semaine prochaine et jsp comment ça marche l'opération tranquillité vacances ?",
+  "intention": "C26"
+ },
+ {
+  "texte": "Carte résidant stationnement : combien ça coûte ? J’ai vu des affiches mais j’ai pas compris le prix exact.",
+  "intention": "C20"
+ },
+ {
+  "texte": "je cherche un acte de naissance pour mon fils mais je galère avec les démarches en ligne, tu peux m'aider ?",
+  "intention": "C02"
+ },
+ {
+  "texte": "Ouverture samedi ? Jsp si c'est possible",
+  "intention": "C27"
+ },
+ {
+  "texte": "je suis en attente depuis 6 mois pour une place en crèche, est-ce que je peux encore faire une nouvelle demande pour une autre crèche ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "Je cherche à acheter un terrain et je veux vérifier s'il est dans une zone constructible. Comment faire pour voir ça sur le PLU ?",
+  "intention": "H04"
+ },
+ {
+  "texte": "les poubelles passent le quel jour cette semaine ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "Bonjour, je souhaite organiser un anniversaire pour mon neveu dans la salle des fêtes, quel est le prix pour une location d’une soirée ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "mon voisin a construit un mur de 3m sans demander d'autorisation, que faire ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "lampadaire en panne depuis 1 semaine près de la mairie, c'est vraiment gênant pour les piétons",
+  "intention": "C21"
+ },
+ {
+  "texte": "jsp si le bac jaune est ramassé demain c ou pas ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "je suis pressé, mon mariage est dans 3 semaines, c’est possible de faire les démarches en si peu de temps ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "salut je veux louer la salle pour un anniversaire mais jsp si c’est possible le week-end, vous avez des prix ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "Bonjour, je souhaiterais savoir si la garderie du matin est ouverte dès 7h30 comme indiqué sur le site ou si c'est plus tard ?",
+  "intention": "C11"
+ },
+ {
+  "texte": "les menus de la cantine sont affichés où ?",
+  "intention": "C10"
+ },
+ {
+  "texte": "mon abri de jardin dépasse déjà de 10cm la hauteur autorisée, que risque-t-on ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "je déménage dans un nouveau quartier, faut-il refaire une demande de carte de stationnement résidant ? et quel est le prix ?",
+  "intention": "C20"
+ },
+ {
+  "texte": "salut, j'ai perdu mon badge pour la déchèterie, comment je fais pour en avoir un nouveau ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "bjr je veux savoir quand passe le camion poubelle svp",
+  "intention": "C15"
+ },
+ {
+  "texte": "Je dois me séparer d'un canapé mais je ne sais pas comment faire les démarches, pouvez-vous m'aider ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "Je veux prendre RDV pour le ramassage des encombrants, comment je fais ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "le bac jaune passe quand ? j'ai trop de cartons",
+  "intention": "C15"
+ },
+ {
+  "texte": "Comment prendre rendez-vous pour le ramassage des encombrants ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "bjr je veux savoir les horaires de la piscine municipale svp",
+  "intention": "C22"
+ },
+ {
+  "texte": "J'ai oublié de désinscrire mon enfant de la cantine pour les vacances, comment je peux régulariser ça ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "mon voisin a dit que ça servait à rien mais j’ai peur que ma maison soit cambriolée pendant mes vacances. comment ça marche exactement ?",
+  "intention": "C26"
+ },
+ {
+  "texte": "je veux inscrire mon enfant au centre de loisirs pour le mercredi mais je veux savoir si il faut que je le dépose moi même ou si y’a un service de ramassage",
+  "intention": "C12"
+ },
+ {
+  "texte": "J'ai un matelas à jeter, faut-il que je le dépose moi-même ou que je prenne rendez-vous ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "Quel est le délai moyen pour obtenir un permis de construire ? Je veux commencer les travaux avant l’hiver.",
+  "intention": "H02"
+ },
+ {
+  "texte": "les jours fériés changent-ils les horaires de collecte ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "je fais des haies et j’ai plein de branches à jeter, ou je les dépose ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "je suis en situation de handicap et je veux une carte de stationnement résidant, est-ce que c’est différent en prix ? svp",
+  "intention": "C20"
+ },
+ {
+  "texte": "je suis en couple et on a déménagé ensemble, faut-il qu’on fasse chacun notre inscription ou c’est possible en même temps ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "J’ai un rendez-vous demain pour ma carte d’identité mais j’ai oublié de prendre mon ancien titre, je peux venir quand même ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "J’ai perdu ma carte d’identité, je dois en refaire une. Quel délai pour avoir le nouveau ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "Bonjour, je souhaite annuler l'inscription de mon enfant à la cantine pour la semaine prochaine, comment procéder ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "salut je suis parent d’élève et je cherche les menus de la cantine pour la semaine du 15 au 19 mai, est-ce que vous pouvez me les envoyer par mail ?",
+  "intention": "C10"
+ },
+ {
+  "texte": "Je dois faire mon recensement citoyen mais je ne sais pas où me rendre ni quoi apporter. Pouvez-vous m’aider ?",
+  "intention": "C07"
+ },
+ {
+  "texte": "je suis en CDD et mon contrat va finir dans 3 mois, je dois faire une demande pour la crèche avant ou après ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "Salut, j’ai vu que la mairie était ouverte samedi, mais je veux confirmer les horaires exacts svp",
+  "intention": "C27"
+ },
+ {
+  "texte": "Quelles sont les règles pour installer une clôture en bois devant chez moi ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "mon voisin tonde sa pelouse à 23h c'est autorisé ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "les tarifs cantine 2026-2027 ont-ils augmenté ? jsp combien ça va coûter cette année ?",
+  "intention": "H07"
+ },
+ {
+  "texte": "les parcelles dans les jardins familiaux sont à quel prix ? et faut payer en une fois ou en plusieurs fois ?",
+  "intention": "H09"
+ },
+ {
+  "texte": "ma voiture a besoin de stationner près de chez moi mais j’ai plus ma carte de résidant, comment je fais pour en avoir une nouvelle ?",
+  "intention": "C20"
+ },
+ {
+  "texte": "plu mon terrain constructible ? j'ai vu un plan mais je galère à trouver la bonne zone",
+  "intention": "H04"
+ },
+ {
+  "texte": "Les horaires de la déchèterie sont ils les mêmes que l'année dernière ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "bjr je cherche les horaires de la garderie du matin pour mon enfant de 4 ans svp",
+  "intention": "C11"
+ },
+ {
+  "texte": "Quels sont les travaux nécessitant une déclaration préalable pour une véranda en ville exemple ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "je veux inscrire mon enfant en maternelle mais la carte scolaire c pas possible je peux faire une demande en ligne ou faut venir en mairie ?",
+  "intention": "C13"
+ },
+ {
+  "texte": "Est-ce que les horaires de la déchèterie sont les mêmes tous les jours ou ça change ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "Comment je fais pour annuler un repas pour demain ? Mon enfant est malade.",
+  "intention": "C09"
+ },
+ {
+  "texte": "jsp comment faire pour avoir un badge pour la déchèterie ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "bjr je veux savoir si les prix de la cantine vont encore monter pour la rentrée 2026-2027 ?",
+  "intention": "H07"
+ },
+ {
+  "texte": "bjr je veux faire une piscine dans mon jardin faut il demander une autorisation ?",
+  "intention": "H05"
+ },
+ {
+  "texte": "un truc de ouf sur la route près de l'école, un trou mon vélo a failli s'écraser, faut faire quelque chose",
+  "intention": "C21"
+ },
+ {
+  "texte": "j'ai raté le ramassage hier, je peux mettre mes déchets aujourd'hui ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "jsp si la piscine municipale est ouverte le samedi matin, et à quel prix ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "salut je cherche les tarifs cantine rentrée 2026-2027, j’ai entendu parler d’une hausse mais je veux être sûr",
+  "intention": "H07"
+ },
+ {
+  "texte": "je suis en couple depuis 5 ans et on veut faire un pacs en mairie, quels sont les documents à fournir ?",
+  "intention": "C04"
+ },
+ {
+  "texte": "délai instruction déclaration préalable pour changement de fenêtres en ville exemple",
+  "intention": "H01"
+ },
+ {
+  "texte": "Je veux consulter le PLU pour mon terrain mais je ne sais pas dans quelle zone il se situe. Pouvez-vous m'aider ?",
+  "intention": "H04"
+ },
+ {
+  "texte": "mon fils a 8 ans et il veut manger à la cantine le mercredi, c'est possible ?",
+  "intention": "C08"
+ },
+ {
+  "texte": "bjr je veux acheter une case au cimetière mais jsp les prix ni les démarches c possible svp",
+  "intention": "C29"
+ },
+ {
+  "texte": "bjr je veux me débarrasser d'un vieux canapé mais jsp comment faire svp",
+  "intention": "C16"
+ },
+ {
+  "texte": "salut je suis nouveau ici et jvoulais savoir si je peux m’inscrire pour voter même si je suis en CDD ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "les jours de collecte sont ils les memes que l'année dernière ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "salut je cherche une place en crèche pour mon enfant de 3 ans, faut faire la demande avant quand ?",
+  "intention": "C14"
+ },
+ {
+  "texte": "poubelle arrachée hier soir, je veux un nouveau bac c'est pas normal",
+  "intention": "C19"
+ },
+ {
+  "texte": "salut je suis nouveau ici, à quelle heure on peut aller nager à la piscine municipale ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "j’ai vu qu’il fallait un justificatif de domicile mais on est en colocation, on fait quoi ?",
+  "intention": "C03"
+ },
+ {
+  "texte": "lampadaire cassé devant chez moi depuis 3 jours, jsp si quelqu'un va le réparer, ça fait bizarre la nuit",
+  "intention": "C21"
+ },
+ {
+  "texte": "Bonjour, je souhaite renouveler la concession de mes parents au cimetière, quel est le tarif pour 10 ans ? Et faut-il faire les démarches en ligne ou sur place ?",
+  "intention": "C29"
+ },
+ {
+  "texte": "J'ai un canapé à jeter mais je veux pas payer pour le ramassage, y'a pas moyen de le faire gratuitement ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "Bonjour, je cherche les horaires d’ouverture de la piscine municipale pour les seniors, ils sont spéciaux ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "faut il une autorisation pour une piscine de 25m2 ? jsp si c’est trop petit ou pas",
+  "intention": "H05"
+ },
+ {
+  "texte": "je pars 3 semaines en août, est-ce que je peux m’inscrire à l’opération tranquillité vacances ?",
+  "intention": "C26"
+ },
+ {
+  "texte": "on a oublié de faire un pacs et on veut le faire maintenant, c’est trop tard ?",
+  "intention": "C04"
+ },
+ {
+  "texte": "Je veux louer la salle des fêtes pour un anniversaire mais je veux savoir si c’est possible avec un petit budget, vous avez des tarifs ?",
+  "intention": "C24"
+ },
+ {
+  "texte": "c cantine mercredi possible pour les enfants ?",
+  "intention": "C08"
+ },
+ {
+  "texte": "Combien ça coûte la garderie périscolaire en 2026 pour les enfants ? Je veux les tarifs pour le matin, le soir et l’étude, merci.",
+  "intention": "H06"
+ },
+ {
+  "texte": "Où je peux retirer ma nouvelle carte d’identité après le rdv ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "Je veux participer à la surveillance des maisons pendant mes vacances mais je ne sais pas comment m’inscrire. Pouvez-vous m’aider ?",
+  "intention": "C26"
+ },
+ {
+  "texte": "la mutuelle communale c’est plus cher que mon actuelle, mais est-ce que c’est vraiment mieux ? j’ai besoin d’un comparatif",
+  "intention": "H10"
+ },
+ {
+  "texte": "J'ai un matelas qui sent mauvais, je veux le faire enlever, comment faire ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "Permis de construire : j’ai besoin de la liste complète des pièces à fournir, svp. J’ai déjà le plan mais je veux être sûr de rien oublier.",
+  "intention": "H02"
+ },
+ {
+  "texte": "salut ! j’ai vu qu’il y avait des jardins familiaux en ville, mais je veux savoir si c’est possible de louer une parcelle pour juste faire des aromates ou si c’est que pour les légumes classiques ?",
+  "intention": "H09"
+ },
+ {
+  "texte": "Les encombrants ça se prend en ligne ou au guichet ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "cantines prix 2026 augmentation ? mon enfant est en maternelle et je veux éviter les mauvaises surprises",
+  "intention": "H07"
+ },
+ {
+  "texte": "les prix de la cantine ont ils été revu pour la rentrée prochaine ? si oui, de combien ? merci",
+  "intention": "H07"
+ },
+ {
+  "texte": "je veux une clôture en métal avec des panneaux publicitaires dessus, c'est autorisé ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "Mairie ouverte samedi ? J’ai un truc à régler et j’ai pas le temps la semaine",
+  "intention": "C27"
+ },
+ {
+  "texte": "je veux savoir si la cantine est ouverte le mercredi pour les enfants de l'école",
+  "intention": "C08"
+ },
+ {
+  "texte": "je veux une clôture en grillage pour mon chien, quelle hauteur max ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "mon portefeuille est parti dans le métro, jsp si y’a un système pour le retrouver",
+  "intention": "C25"
+ },
+ {
+  "texte": "procuration voter comment ça marche ? j'ai besoin d'infos urgentes",
+  "intention": "C06"
+ },
+ {
+  "texte": "Bonjour, je dois faire une démarche ce samedi, mais je ne sais pas si la mairie est ouverte. Pouvez-vous me confirmer ?",
+  "intention": "C27"
+ },
+ {
+  "texte": "Quelle est la différence entre une déclaration préalable et un permis de construire pour des travaux de façade ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "je veux savoir si les enfants de moins de 6 ans ont un tarif réduit à la piscine municipale, et les horaires pour eux ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "Quels sont les horaires de la médiathèque pendant les vacances scolaires ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "Mon passeport est périmé depuis 2 ans, je dois le renouveler. Quel délai pour l’avoir ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "Ma poubelle est cassée depuis 3 jours, est-ce que je peux en avoir une autre ? Merci d’avance.",
+  "intention": "C19"
+ },
+ {
+  "texte": "J'ai un problème avec la cantine : mon enfant n'a pas eu son repas réservé hier, que faire ?",
+  "intention": "C09"
+ },
+ {
+  "texte": "Mon voisin a commencé les travaux de sa véranda sans rien déclarer, est-ce que je peux faire quelque chose ?",
+  "intention": "H01"
+ },
+ {
+  "texte": "mon voisin fait du bruit en bricolant à 8h du mat tous les samedis c'est légal ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "bjr je voudrais savoir si on peut encore récupérer les branches de mon arbre abattu svp ?",
+  "intention": "C18"
+ },
+ {
+  "texte": "jsp combien ça coûte la garderie périscolaire en 2026 pour 3 ans ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "j'ai pas pu voter hier, je veux donner mon droit à mon voisin mais je sais pas comment faire la démarche",
+  "intention": "C06"
+ },
+ {
+  "texte": "déchet sauvage devant chez moi depuis hier, sac poubelle qui traîne, c'est pas cool",
+  "intention": "C21"
+ },
+ {
+  "texte": "J’ai 18 ans et je viens d’emménager ici, comment je fais pour être inscrit pour les prochaines élections municipales ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "ma femme et moi on veut souscrire à la mutuelle de la ville, mais on a des enfants en bas âge, y’a des avantages pour eux ?",
+  "intention": "H10"
+ },
+ {
+  "texte": "les horaires de la médiathèque changent souvent ?",
+  "intention": "C23"
+ },
+ {
+  "texte": "est-ce que la piscine municipale fait payer plus cher en haute saison ? et les horaires changent ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "les tarifs pour les adultes et les enfants à la piscine municipale ?",
+  "intention": "C22"
+ },
+ {
+  "texte": "Jsp comment faire pour un frigo à jeter, c'est comme les encombrants ?",
+  "intention": "C16"
+ },
+ {
+  "texte": "j’ai perdu mes clés devant la mairie svp aidez moi",
+  "intention": "C25"
+ },
+ {
+  "texte": "crèche pour mon bébé de 1 an, je veux faire la demande mais jsp si c trop tard ou pas",
+  "intention": "C14"
+ },
+ {
+  "texte": "J’ai perdu mon bac à ordures hier, comment je fais pour en avoir un autre ?",
+  "intention": "C19"
+ },
+ {
+  "texte": "bjr je suis nouveau dans le coin et jsp comment faire pour avoir une place dans les jardins familiaux ?",
+  "intention": "H09"
+ },
+ {
+  "texte": "J’ai mon rendez-vous pour le passeport mais j’ai oublié de prendre une photo d’identité, c’est grave ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "bjr je veux faire poser des fenêtres mais jsp si je dois faire une déclaration avant ou pas",
+  "intention": "H01"
+ },
+ {
+  "texte": "bjr je suis en 3ème et j’ai 16 ans bientôt, jsp comment faire pour mon recensement ?",
+  "intention": "C07"
+ },
+ {
+  "texte": "je cherche les horaires de la déchèterie pour demain matin, pouvez vous me les donner ?",
+  "intention": "C17"
+ },
+ {
+  "texte": "est-ce que les enfants ont le droit de manger à la cantine scolaire le mercredi ?",
+  "intention": "C08"
+ },
+ {
+  "texte": "Je suis en déplacement professionnel et je dois voter par procuration, mais avant ça je veux vérifier que mon adresse est bien à jour sur les listes. Comment faire ?",
+  "intention": "C05"
+ },
+ {
+  "texte": "Comment renouveler mon passeport ? Quelles sont les pièces à fournir ?",
+  "intention": "C01"
+ },
+ {
+  "texte": "les poubelles passent le lundi ou le jeudi ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "Je suis dans une situation compliquée, j'ai des factures d'électricité impayées et je ne sais pas quoi faire. Pouvez-vous m'aider à trouver une solution ?",
+  "intention": "C28"
+ },
+ {
+  "texte": "bjr je veux monter un mur dans mon jardin mais jsp la hauteur max autorisée svp",
+  "intention": "H03"
+ },
+ {
+  "texte": "les tarifs de la garderie périscolaire pour 2026 sont ils les mêmes que cette année ou ça va monter ?",
+  "intention": "H06"
+ },
+ {
+  "texte": "jsp si je peux couper l'herbe à 7h du matin c'est trop tôt ou pas ?",
+  "intention": "H08"
+ },
+ {
+  "texte": "Jsp les horaires de la mairie pour samedi, c’est ouvert ou pas ?",
+  "intention": "C27"
+ },
+ {
+  "texte": "Bonjour, je souhaiterais connaître les tarifs appliqués pour la cantine scolaire à partir de la rentrée 2026. Y a-t-il eu une augmentation par rapport à l’année dernière ?",
+  "intention": "H07"
+ },
+ {
+  "texte": "mon bac gris n'a pas été pris hier, c normal ?",
+  "intention": "C15"
+ },
+ {
+  "texte": "attestation de recensement j’ai perdu la mienne comment faire pour en avoir une copie ?",
+  "intention": "C07"
+ },
+ {
+  "texte": "mon terrain est dans la zone b1 ou b2 ? j'ai vu ça sur un plan mais je suis pas sûr du tout",
+  "intention": "H04"
+ },
+ {
+  "texte": "je veux un mur en pierre de 2m50, faut-il un permis de construire ou juste une déclaration ?",
+  "intention": "H03"
+ },
+ {
+  "texte": "bjr je suis résidant depuis 2018 et jsp comment faire pour avoir ma carte de stationnement pour résidant ?",
+  "intention": "C20"
+ },
+ {
+  "texte": "jsp si les enfants peuvent manger à la cantine le mercredi, svp",
+  "intention": "C08"
+ }
+]

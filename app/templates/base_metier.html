@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>{% block titre %}Une question d'habitant{% endblock %} · état de l'art</title>
+  <link rel="stylesheet" href="/static/css/noese.css?v={{ version_statique }}">
+  <script src="/static/js/dictee.js?v={{ version_statique }}" defer></script>
+</head>
+<body class="page-metier">
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+  <header class="entete">
+    <div class="conteneur conteneur-etroit">
+      <span class="marque">
+        <span class="logo" aria-hidden="true"><span class="logo-e">e</span>tat de l'art</span>
+        <span class="sr-only">état de l'art</span>
+        <span class="produit">Le Jardinier</span>
+      </span>
+    </div>
+  </header>
+  <main id="contenu" tabindex="-1">
+    <div class="conteneur conteneur-etroit">
+      {% block contenu %}{% endblock %}
+    </div>
+  </main>
+</body>
+</html>

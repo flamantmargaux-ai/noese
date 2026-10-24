@@ -1,0 +1,21 @@
+{% extends "base_metier.html" %}
+{% block titre %}Merci{% endblock %}
+{% block contenu %}
+<div class="vide" style="padding-top: 0">
+  {% with couleur="lagon" %}{% include "_illustration.html" %}{% endwith %}
+  <div>
+    <h1 class="titre-2">Merci</h1>
+    <p class="chapeau">Votre fiche est dans la base. Nous vous redemanderons de la vérifier le {{ fiche.perime_le|date_fr }}.</p>
+  </div>
+</div>
+<section class="carte" aria-labelledby="t-fiche">
+  <p class="surtitre">Votre fiche</p>
+  <h2 class="titre-3" id="t-fiche">{{ v.titre }}</h2>
+  <p>{{ v.reponse }}</p>
+  {% if v.conditions %}<p class="surtitre">Conditions</p><p>{{ v.conditions }}</p>{% endif %}
+  {% if v.pieces %}<p class="surtitre">Pièces à fournir</p><ul class="exemples">{% for p in v.pieces.splitlines() %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+  {% if v.lien_demarche %}<p><a href="{{ v.lien_demarche }}">Faire la démarche en ligne</a></p>{% endif %}
+  <p class="legende">Source : {{ service.nom if service else "service" }}, validée par {{ v.validee_par }} le {{ v.validee_le|date_fr }}.</p>
+</section>
+<p class="legende" style="margin-top: var(--espace-m)">Vous pouvez fermer cette page.</p>
+{% endblock %}

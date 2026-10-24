@@ -1,0 +1,3 @@
+{% set noms = {"a_jour": "À jour", "bientot": "À vérifier bientôt", "perimee": "Périmée", "archivee": "Retirée"} %}
+{% set couleurs = {"a_jour": "couvert", "bientot": "partiel", "perimee": "trou", "archivee": "neutre"} %}
+<span class="statut"><span class="pastille pastille-{{ couleurs[etat] }}"></span>{{ noms[etat] }}</span>

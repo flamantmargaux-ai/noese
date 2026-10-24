@@ -1,0 +1,41 @@
+{% extends "base_metier.html" %}
+{% block contenu %}
+<p class="surtitre">{{ service.nom if service else "Une question pour vous" }}</p>
+<h1 class="titre-2">{{ d.question }}</h1>
+<p class="chapeau">{{ nb_30j or nb_total }} habitant{{ "s ont" if (nb_30j or nb_total) > 1 else " a" }} posé cette question{% if nb_30j %} ces 30 derniers jours{% endif %}. Répondez avec vos mots, nous mettons en forme, vous validez.</p>
+
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+{% if brouillon %}
+<div class="message">Vous avez déjà répondu. <a href="/r/{{ jeton }}/fiche">Reprendre la relecture de la fiche</a>, ou répondez à nouveau ci-dessous.</div>
+{% endif %}
+
+<details class="contexte">
+  <summary class="lien-action">Voir ce que demandent les habitants</summary>
+  <ul class="exemples">{% for e in exemples %}<li>{{ e }}</li>{% endfor %}</ul>
+  {% if g and g.verdict == "partiel" and g.reponse %}
+  <p class="surtitre" style="margin-top: var(--espace-s)">Ce que la base dit déjà</p>
+  <p>{{ g.reponse }}</p>
+  {% endif %}
+</details>
+
+<form method="post" action="/r/{{ jeton }}/reponse" data-attente="Mise en forme en cours…">
+  <input type="hidden" id="dictee" name="dictee" value="">
+  <div class="champ">
+    <label for="texte">Votre réponse</label>
+    <textarea id="texte" name="texte" rows="6" required aria-describedby="aide-texte statut-dictee">{{ texte or "" }}</textarea>
+    <span class="aide" id="aide-texte">En quelques mots, même en style télégraphique : délai, conditions, pièces à fournir, lien utile.</span>
+  </div>
+  <div class="dictee">
+    <button id="dicter" class="bouton bouton-secondaire" type="button" aria-pressed="false" data-url="/r/{{ jeton }}/dictee" hidden>
+      <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      <span class="libelle">Dicter ma réponse</span><span class="point-enregistrement" aria-hidden="true"></span>
+      <span id="duree-dictee" class="duree" aria-hidden="true"></span>
+    </button>
+    <p id="statut-dictee" class="aide" role="status"></p>
+  </div>
+  <button class="bouton bouton-large" type="submit">Mettre en forme</button>
+  <p class="legende" style="margin-top: var(--espace-s)">Ensuite : vous relisez la fiche proposée, vous la corrigez si besoin, puis vous la validez. Rien n'est publié sans votre accord.</p>
+</form>
+
+<p class="pas-moi"><a href="/r/{{ jeton }}/transferer">Je ne suis pas la bonne personne</a></p>
+{% endblock %}

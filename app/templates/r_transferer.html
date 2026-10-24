@@ -1,0 +1,27 @@
+{% extends "base_metier.html" %}
+{% block titre %}Transmettre à un collègue{% endblock %}
+{% block contenu %}
+<p><a class="retour" href="/r/{{ jeton }}"><span aria-hidden="true">←</span> Retour à la question</a></p>
+<p class="surtitre">Transmettre</p>
+<h1 class="titre-2">Qui peut répondre ?</h1>
+<p class="chapeau">Indiquez un collègue qui connaît la réponse. Il recevra la même question par mail, avec son propre lien.</p>
+<div class="carte" style="margin-bottom: var(--espace-m)"><p style="margin:0">« {{ d.question }} »</p></div>
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+<form method="post" action="/r/{{ jeton }}/transferer">
+  <div class="champ">
+    <label for="email">Adresse mail de votre collègue</label>
+    <input id="email" name="email" type="email" required autocomplete="off" value="{{ email or '' }}">
+  </div>
+  <div class="champ">
+    <label for="nom">Son nom</label>
+    <input id="nom" name="nom" type="text" autocomplete="off" value="{{ nom or '' }}" aria-describedby="aide-nom-collegue">
+    <span class="aide" id="aide-nom-collegue">Facultatif.</span>
+  </div>
+  <div class="champ">
+    <label for="par">Votre nom</label>
+    <input id="par" name="par" type="text" autocomplete="name" value="{{ par or d.destinataire_nom }}" aria-describedby="aide-par">
+    <span class="aide" id="aide-par">Pour que votre collègue sache de qui vient la question.</span>
+  </div>
+  <button class="bouton bouton-large" type="submit">Transmettre la question</button>
+</form>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base_metier.html" %}
+{% block titre %}Relisez votre fiche{% endblock %}
+{% block contenu %}
+<p class="surtitre">Relecture</p>
+<h1 class="titre-2">Relisez votre fiche</h1>
+<p class="chapeau">Voici votre réponse mise en forme. Corrigez ce qui ne va pas, puis validez. Rien n'entre dans la base avant votre validation.</p>
+
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+{% if v.a_verifier and not erreur %}
+<div class="message"><span class="statut"><span class="pastille pastille-partiel"></span>À vérifier</span><p style="margin: 8px 0 0">{{ v.a_verifier }}</p></div>
+{% endif %}
+
+{% if origine %}
+<div class="origine">
+  <p class="surtitre">Ce que vous avez écrit</p>
+  <p>{{ origine }}</p>
+  <p class="legende">Vérifiez que la fiche ne dit rien de plus. Retirez toute phrase que vous n'avez pas écrite ou dont vous n'êtes pas sûr.</p>
+</div>
+{% endif %}
+
+<form method="post" action="/r/{{ jeton }}/valider">
+  {% with f=v, saisonniere=fiche.saisonniere, valide_par=(valide_par if valide_par is defined else d.destinataire_nom) %}
+  {% include "_champs_fiche.html" %}
+  {% endwith %}
+  <button class="bouton bouton-final bouton-large" type="submit">Valider la fiche</button>
+</form>
+<p class="pas-moi"><a href="/r/{{ jeton }}">Reprendre ma réponse</a></p>
+{% endblock %}

@@ -1,0 +1,31 @@
+[project]
+name = "noese"
+version = "0.1.0"
+description = "Noèse, le Jardinier : garder fraîche la base de connaissances des IA de relation usagers"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "EUPL-1.2"
+dependencies = [
+    "fastapi>=0.162.0",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
+    "jinja2>=3.1.6",
+    "numpy>=2.5.4",
+    "pgvector>=0.5.1",
+    "psycopg[binary]>=3.3.6",
+    "pypdf>=6.21.2",
+    "python-multipart>=0.0.32",
+    "pyyaml>=6.0.3",
+    "sqlalchemy>=2.1.6",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "pgserver>=0.1.4",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

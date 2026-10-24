@@ -1,0 +1,51 @@
+{% extends "base_metier.html" %}
+{% block titre %}Cette fiche est-elle toujours juste ?{% endblock %}
+{% block contenu %}
+<p class="surtitre">{{ service.nom if service else "Vérification" }}</p>
+<h1 class="titre-2">Cette fiche est-elle toujours juste ?</h1>
+<p class="chapeau">Votre service en est propriétaire. Elle arrive à échéance le {{ fiche.perime_le|date_fr }}. Si rien n'a changé, un clic suffit.</p>
+
+{% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
+
+<section class="carte" aria-labelledby="t-fiche" style="margin-bottom: var(--espace-m)">
+  <h2 class="titre-3" id="t-fiche">{{ version.titre }}</h2>
+  <p>{{ version.reponse }}</p>
+  {% if version.conditions %}<p class="surtitre">Conditions</p><p>{{ version.conditions }}</p>{% endif %}
+  {% if version.pieces %}<p class="surtitre">Pièces à fournir</p><ul class="exemples">{% for p in version.pieces.splitlines() %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+  {% if version.lien_demarche %}<p><a href="{{ version.lien_demarche }}">{{ version.lien_demarche }}</a></p>{% endif %}
+  <p class="legende" style="margin:0">Validée par {{ version.validee_par }} le {{ version.validee_le|date_fr }}{% if fiche.verifiee_le %}, vérifiée par {{ fiche.verifiee_par }} le {{ fiche.verifiee_le|date_fr }}{% endif %}.</p>
+</section>
+
+<form method="post" action="/v/{{ jeton }}/toujours-juste">
+  <button class="bouton bouton-final bouton-large" type="submit">Toujours juste</button>
+  <p class="legende" style="margin-top: var(--espace-xs)">Nous vous la redemanderons dans {{ (jours_saison if fiche.saisonniere else (jours_normal / 30)|round|int) }} {{ "jours" if fiche.saisonniere else "mois" }}.</p>
+</form>
+
+<details class="champ-compact" {% if ouvrir == "modifier" %}open{% endif %} style="margin-top: var(--espace-m)">
+  <summary class="lien-action">Quelque chose a changé : corriger la fiche</summary>
+  <form method="post" action="/v/{{ jeton }}/modifier" style="margin-top: var(--espace-s)">
+    {% set f = saisie if saisie is defined else version %}
+    {% with saisonniere=(saisie.saisonniere if saisie is defined else fiche.saisonniere), valide_par=(saisie.valide_par if saisie is defined else v.destinataire_nom) %}
+    {% include "_champs_fiche.html" %}
+    {% endwith %}
+    <button class="bouton bouton-large" type="submit">Valider la fiche corrigée</button>
+  </form>
+</details>
+
+<details class="champ-compact" {% if ouvrir == "retirer" %}open{% endif %}>
+  <summary class="lien-action">Ce n'est plus d'actualité : retirer la fiche</summary>
+  <form method="post" action="/v/{{ jeton }}/retirer" style="margin-top: var(--espace-s)">
+    <p>La fiche sortira de la base. Les assistants ne s'en serviront plus, et le sujet reviendra dans les trous à traiter.</p>
+    <div class="champ">
+      <label for="raison">Pourquoi ?</label>
+      <input id="raison" name="raison" type="text" aria-describedby="aide-raison" placeholder="Le service n'existe plus, la démarche a changé…">
+      <span class="aide" id="aide-raison">Facultatif, mais utile au référent de la base.</span>
+    </div>
+    <div class="champ">
+      <label for="par">Votre nom</label>
+      <input id="par" name="par" type="text" required autocomplete="name" value="{{ v.destinataire_nom }}">
+    </div>
+    <button class="bouton bouton-secondaire" type="submit">Retirer la fiche</button>
+  </form>
+</details>
+{% endblock %}

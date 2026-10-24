@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block titre %}Paramètres{% endblock %}
+{% block contenu %}
+<p class="surtitre">Paramètres</p>
+<h1>Paramètres</h1>
+<p class="chapeau">Les services et leurs référents, et le rythme auquel la base est vérifiée.</p>
+{% if message == "fraicheur" %}<div class="message" role="status">Les règles de fraîcheur sont enregistrées. Elles s'appliquent aux prochaines validations et vérifications.</div>{% endif %}
+{% if message == "services" %}<div class="message" role="status">Les services sont enregistrés.</div>{% endif %}
+
+<section class="section" id="fraicheur" aria-labelledby="t-fraicheur">
+  <h2 id="t-fraicheur">Fraîcheur et relances</h2>
+  <form class="carte" method="post" action="/parametres/fraicheur">
+    <div class="grille-2">
+      <div class="champ">
+        <label for="peremption_mois">Durée de validité d'une fiche (mois)</label>
+        <input id="peremption_mois" name="peremption_mois" type="number" min="1" max="24" inputmode="numeric" value="{{ (p.peremption_jours * 12 / 365)|round|int }}">
+      </div>
+      <div class="champ">
+        <label for="peremption_saison_jours">Pour un tarif, une date ou une saison (jours)</label>
+        <input id="peremption_saison_jours" name="peremption_saison_jours" type="number" min="7" max="365" inputmode="numeric" value="{{ p.peremption_saison_jours }}">
+      </div>
+      <div class="champ">
+        <label for="preavis_jours">Demander la vérification (jours avant l'échéance)</label>
+        <input id="preavis_jours" name="preavis_jours" type="number" min="1" max="60" inputmode="numeric" value="{{ p.preavis_jours }}">
+      </div>
+      <div class="champ">
+        <label for="preavis_saison_jours">Pour un tarif, une date ou une saison (jours avant)</label>
+        <input id="preavis_saison_jours" name="preavis_saison_jours" type="number" min="1" max="30" inputmode="numeric" value="{{ p.preavis_saison_jours }}">
+      </div>
+      <div class="champ">
+        <label for="relance_jours_ouvres">Relance douce sans réponse (jours ouvrés)</label>
+        <input id="relance_jours_ouvres" name="relance_jours_ouvres" type="number" min="1" max="20" inputmode="numeric" value="{{ p.relance_jours_ouvres }}" aria-describedby="aide-relance">
+        <span class="aide" id="aide-relance">Le même délai sépare la relance du signalement au référent de la base.</span>
+      </div>
+    </div>
+    <div class="grille-2">
+      <div class="champ">
+        <label for="referent_base_nom">Référent de la base : nom</label>
+        <input id="referent_base_nom" name="referent_base_nom" type="text" value="{{ p.referent_base_nom }}">
+      </div>
+      <div class="champ">
+        <label for="referent_base_email">Référent de la base : adresse mail</label>
+        <input id="referent_base_email" name="referent_base_email" type="email" value="{{ p.referent_base_email }}" aria-describedby="aide-rb">
+        <span class="aide" id="aide-rb">Reçoit les signalements quand un service ne répond pas malgré la relance.</span>
+      </div>
+    </div>
+    <button class="bouton" type="submit">Enregistrer</button>
+  </form>
+</section>
+
+<section class="section" id="services" aria-labelledby="t-services">
+  <h2 id="t-services">Services et référents</h2>
+  <form method="post" action="/parametres/services">
+    <div class="tableau-defilant">
+    <table>
+      <caption class="sr-only">Services de la collectivité et leurs référents</caption>
+      <thead><tr><th scope="col">Service</th><th scope="col">Référent</th><th scope="col">Adresse mail</th></tr></thead>
+      <tbody>
+        {% for sv in services %}
+        <tr>
+          <td><label class="sr-only" for="nom_{{ sv.id }}">Nom du service</label><input id="nom_{{ sv.id }}" name="nom_{{ sv.id }}" type="text" value="{{ sv.nom }}"></td>
+          <td><label class="sr-only" for="referent_nom_{{ sv.id }}">Référent du service {{ sv.nom }}</label><input id="referent_nom_{{ sv.id }}" name="referent_nom_{{ sv.id }}" type="text" value="{{ sv.referent_nom }}"></td>
+          <td><label class="sr-only" for="referent_email_{{ sv.id }}">Adresse mail du référent {{ sv.nom }}</label><input id="referent_email_{{ sv.id }}" name="referent_email_{{ sv.id }}" type="email" value="{{ sv.referent_email }}"></td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td><label class="sr-only" for="nouveau_nom">Nouveau service</label><input id="nouveau_nom" name="nouveau_nom" type="text" placeholder="Nouveau service"></td>
+          <td><label class="sr-only" for="nouveau_referent_nom">Référent du nouveau service</label><input id="nouveau_referent_nom" name="nouveau_referent_nom" type="text"></td>
+          <td><label class="sr-only" for="nouveau_referent_email">Adresse mail du référent du nouveau service</label><input id="nouveau_referent_email" name="nouveau_referent_email" type="email"></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top: var(--espace-s)"><button class="bouton" type="submit">Enregistrer les services</button></p>
+  </form>
+</section>
+
+<section class="section" id="export" aria-labelledby="t-export">
+  <h2 id="t-export">Export de la base</h2>
+  <p>Les fiches validées, prêtes à importer dans votre chatbot, votre callbot ou votre assistant de réponse aux mails. Chaque fiche porte sa source, la personne qui l'a validée, sa date de vérification et des exemples de questions d'habitants.</p>
+  <ul class="liste">
+    <li class="ligne"><div><a href="/export/base.md">Markdown</a><div class="meta">Lisible par une personne, et découpé en une section par fiche pour les outils d'IA.</div></div></li>
+    <li class="ligne"><div><a href="/export/base.json">JSON</a><div class="meta">Pour un import automatique ou une intégration par un prestataire.</div></div></li>
+    <li class="ligne"><div><a href="/export/base.csv">CSV</a><div class="meta">S'ouvre dans un tableur. Séparateur point-virgule.</div></div></li>
+  </ul>
+  <p class="legende" style="margin-top: var(--espace-s)">Les fiches périmées sont incluses et signalées comme à vérifier. <a href="/export/base.json?perimees=0">Exporter sans les fiches périmées</a>. Ces trois fichiers se réimportent dans Noèse depuis l'écran Importer.</p>
+</section>
+
+<section class="section" id="echeances" aria-labelledby="t-echeances">
+  <h2 id="t-echeances">Relances et mails</h2>
+  <p>Le worker vérifie les échéances toutes les 15 minutes, les jours ouvrés de 8 h à 18 h. Vous pouvez le lancer tout de suite.</p>
+  <form method="post" action="/parametres/echeances"><button class="bouton bouton-secondaire" type="submit">Lancer les relances maintenant</button></form>
+  {% if bilan %}
+  <div class="message" role="status" style="margin-top: var(--espace-s)">
+    {% if bilan.ignore %}{{ bilan.ignore }}{% else %}
+    {{ bilan.verifications }} demande{{ "s" if bilan.verifications > 1 }} de vérification, {{ bilan.relances }} relance{{ "s" if bilan.relances > 1 }}, {{ bilan.signalements }} signalement{{ "s" if bilan.signalements > 1 }}.
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if mails %}
+  <div class="tableau-defilant section" style="margin-top: var(--espace-m)">
+  <table>
+    <caption class="sr-only">Derniers mails</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Destinataire</th><th scope="col">État</th></tr></thead>
+    <tbody>
+      {% set types = {"demande": "Demande", "relance": "Relance", "verification": "Vérification", "signalement": "Signalement"} %}
+      {% for m in mails %}
+      <tr>
+        <td>{{ m.cree_le|date_fr }}</td>
+        <td>{{ types.get(m.type, m.type) }}</td>
+        <td>{{ m.destinataire }}</td>
+        <td>{% if m.statut == "envoye" %}Envoyé{% elif m.statut == "journal" %}Journalisé{% else %}Échec{% endif %}
+          {% if m.lien %}<br><a href="{{ m.lien }}">Ouvrir le lien</a>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

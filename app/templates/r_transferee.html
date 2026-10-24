@@ -1,0 +1,8 @@
+{% extends "base_metier.html" %}
+{% block titre %}Question transmise{% endblock %}
+{% block contenu %}
+<p class="surtitre">Question transmise</p>
+<h1 class="titre-2">Merci</h1>
+<p class="chapeau">La question a été transmise{% if suivante %} à {{ suivante.destinataire_nom or suivante.destinataire_email }}{% endif %}. Vous n'avez rien d'autre à faire.</p>
+<div class="carte"><p style="margin:0">« {{ d.question }} »</p></div>
+{% endblock %}

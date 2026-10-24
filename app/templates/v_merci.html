@@ -1,0 +1,18 @@
+{% extends "base_metier.html" %}
+{% block titre %}Merci{% endblock %}
+{% block contenu %}
+<div class="vide" style="padding-top: 0">
+  {% with couleur="lagon" %}{% include "_illustration.html" %}{% endwith %}
+  <div>
+    <h1 class="titre-2">Merci</h1>
+    {% if v.reponse == "retiree" %}
+      <p class="chapeau">La fiche est retirée de la base. Le référent de la base en est informé, et le sujet revient dans les trous à traiter.</p>
+    {% elif v.reponse in ("toujours_juste", "modifiee") %}
+      <p class="chapeau">{{ "Votre fiche corrigée est dans la base." if v.reponse == "modifiee" else "La fiche est confirmée." }} Nous vous redemanderons de la vérifier le {{ fiche.perime_le|date_fr }}.</p>
+    {% else %}
+      <p class="chapeau">Cette vérification est close. Vous n'avez rien d'autre à faire.</p>
+    {% endif %}
+  </div>
+</div>
+<p class="legende">Vous pouvez fermer cette page.</p>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block titre %}{{ g.libelle }}{% endblock %}
+{% block contenu %}
+{% set messages = {
+  "service": "Le service est enregistré.",
+  "libelle": "Le libellé est enregistré.",
+  "ecarte": "Ce besoin est écarté. Il n'apparaît plus dans les trous à traiter. Vous pouvez le rouvrir à tout moment.",
+  "rouvert": "Ce besoin est rouvert. Il revient dans les trous à traiter.",
+  "reverifie": "La base a été vérifiée à nouveau. Le verdict ci-dessous est à jour.",
+  "demande": "La demande est partie. Vous la suivez ici, et nous relancerons le service s'il ne répond pas.",
+  "rassemble": "Les deux besoins sont rassemblés ici. La base a été vérifiée à nouveau pour l'ensemble des questions.",
+} %}
+<p><a class="retour" href="{{ retour }}"><span aria-hidden="true">←</span> Retour aux trous</a></p>
+<p class="surtitre">{{ g.service.nom if g.service else "Service à choisir" }}</p>
+<h1 class="titre-2">{{ g.libelle }}</h1>
+<p>{% with l=None %}{% include "_statut_groupe.html" %}{% endwith %}</p>
+<p class="chapeau">
+  {{ d.questions|length }} habitant{{ "s ont" if d.questions|length > 1 else " a" }} posé cette question{% if d.nb_30j %}, dont {{ d.nb_30j }} ces 30 derniers jours{% endif %}.
+  {% if d.transferts %}{{ d.transferts }} fois, l'outil a dû passer la main à un agent.{% endif %}
+</p>
+{% if message in messages %}<div class="message" role="status">{{ messages[message] }}</div>{% endif %}
+
+<div class="mise-en-page-detail">
+  <div class="colonne-principale">
+    {% if g.verdict == "trou" %}
+      <section aria-labelledby="t-manque">
+        <h2 class="titre-3" id="t-manque">Ce qui manque dans la base</h2>
+        <p>{{ g.manque }}</p>
+        <p class="legende">La base ne dit rien sur ce sujet. Aucune source n'a été trouvée.</p>
+      </section>
+    {% else %}
+      {% if g.reponse %}
+      <section aria-labelledby="t-reponse">
+        <h2 class="titre-3" id="t-reponse">Ce que la base répond</h2>
+        <p>{{ g.reponse }}</p>
+      </section>
+      {% endif %}
+      {% if g.manque %}
+      <section aria-labelledby="t-manque">
+        <h2 class="titre-3" id="t-manque">Ce qui manque</h2>
+        <p>{{ g.manque }}</p>
+      </section>
+      {% endif %}
+      <section aria-labelledby="t-sources">
+        <h2 class="titre-3" id="t-sources">Sources</h2>
+        {% for src in g.sources %}
+          <div class="citation">
+            <p style="margin-bottom: 4px">[{{ src.n }}] {% if src.url and src.url.startswith("http") %}<a href="{{ src.url }}">{{ src.titre }}</a>{% else %}{{ src.titre }}{% endif %}</p>
+            <p class="legende">{{ src.texte }}</p>
+          </div>
+        {% endfor %}
+      </section>
+    {% endif %}
+    {% if g.juge_le %}<p class="legende">Vérifié le {{ g.juge_le|date_fr }}.</p>{% endif %}
+
+    <section class="section" aria-labelledby="t-questions">
+      <h2 class="titre-3" id="t-questions">Les questions des habitants</h2>
+      <p class="legende">
+        {% if d.premiere %}Du {{ d.premiere|date_fr }} au {{ d.derniere|date_fr }}. {% endif %}
+        Canaux : {% for canal, n in d.canaux %}{{ canal }} ({{ n }}){{ ", " if not loop.last }}{% endfor %}.
+      </p>
+      <ul class="liste questions">
+        {% for q in d.questions %}
+        {% if loop.index == 11 %}</ul><details class="plus"><summary class="bouton bouton-secondaire">Voir les {{ d.questions|length - 10 }} autres questions</summary><ul class="liste questions">{% endif %}
+        <li>
+          <p>{{ q.texte }}</p>
+          <p class="meta">{{ q.date|date_fr if q.date else "Date inconnue" }}{% if q.canal %} · {{ q.canal }}{% endif %}{% if q.transfere %} · passée à un agent{% endif %}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% if d.questions|length > 10 %}</details>{% endif %}
+    </section>
+  </div>
+
+  <aside class="colonne-actions" aria-label="Actions">
+    <div class="carte">
+      <h2 class="titre-3">Et maintenant</h2>
+      {% if g.statut == "ecarte" %}
+        <p>Ce besoin est écarté.</p>
+        <form method="post" action="/trous/{{ g.id }}/rouvrir"><input type="hidden" name="retour" value="{{ retour }}">
+          <button class="bouton" type="submit">Rouvrir ce besoin</button></form>
+      {% else %}
+        {% if suivi %}
+          {% for x in suivi %}
+          <div class="suivi-demande">
+            {% if x.fiche and x.fiche.statut == "validee" %}
+              <span class="statut"><span class="pastille pastille-couvert"></span>Fiche validée</span>
+              <p style="margin:0">« {{ x.version.titre }} », validée par {{ x.version.validee_par }} le {{ x.version.validee_le|date_fr }}.</p>
+              <p class="legende" style="margin:0">À revérifier le {{ x.fiche.perime_le|date_fr }}.</p>
+            {% elif x.d.statut == "transferee" %}
+              <span class="statut"><span class="pastille pastille-neutre"></span>Transmise</span>
+              <p class="legende" style="margin:0">{{ x.d.destinataire_nom or x.d.destinataire_email }} l'a transmise à un collègue.</p>
+            {% else %}
+              <span class="statut"><span class="pastille pastille-neutre"></span>{{ "Fiche en relecture" if x.fiche else "En attente de réponse" }}</span>
+              <p style="margin:0">Envoyée le {{ x.d.envoyee_le|date_fr }} à {{ x.d.destinataire_nom or x.d.destinataire_email }}.</p>
+              {% if x.mail and x.mail.statut != "envoye" and x.mail.lien %}
+                <p class="legende" style="margin:0">{% if x.mail.statut == "echec" %}Le mail n'est pas parti : {{ x.mail.erreur }}.{% else %}Envoi des mails désactivé sur cette installation.{% endif %} Transmettez ce lien autrement :</p>
+                <p class="lien-copie">{{ x.mail.lien }}</p>
+              {% endif %}
+            {% endif %}
+          </div>
+          {% endfor %}
+          {% if g.statut not in ("resolu",) %}
+          <a class="lien-action" href="/trous/{{ g.id }}/demande?retour={{ retour|urlencode }}">Envoyer une autre demande</a>
+          {% endif %}
+        {% elif g.verdict in ("trou", "partiel") %}
+        <p>Demandez l'information manquante au service concerné. Il répond depuis un lien, sans compte.</p>
+        <a class="bouton" href="/trous/{{ g.id }}/demande?retour={{ retour|urlencode }}">Préparer la demande</a>
+        {% else %}
+        <p>La base répond à ce besoin. Vérifiez la source si les habitants continuent d'appeler.</p>
+        {% endif %}
+      {% endif %}
+
+      <form class="champ-compact" method="post" action="/trous/{{ g.id }}/service">
+        <input type="hidden" name="retour" value="{{ retour }}">
+        <label for="service">Service concerné</label>
+        <select id="service" name="service_id">
+          <option value="">Service à choisir</option>
+          {% for sv in services %}<option value="{{ sv.id }}" {% if g.service_id == sv.id %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}
+        </select>
+        <button class="bouton bouton-secondaire" type="submit">Enregistrer le service</button>
+      </form>
+
+      <details class="champ-compact">
+        <summary class="lien-action">Modifier le libellé</summary>
+        <form method="post" action="/trous/{{ g.id }}/libelle">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="libelle" class="sr-only">Libellé</label>
+          <input id="libelle" name="libelle" type="text" value="{{ g.libelle }}" required maxlength="300">
+          <button class="bouton bouton-secondaire" type="submit">Enregistrer le libellé</button>
+        </form>
+      </details>
+
+      <details class="champ-compact">
+        <summary class="lien-action">Rassembler avec un autre besoin</summary>
+        <form method="post" action="/trous/{{ g.id }}/rassembler">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="cible">Besoin qui garde les questions</label>
+          <select id="cible" name="cible_id" required>
+            <option value="">Choisissez un besoin</option>
+            {% for c in candidats %}<option value="{{ c.id }}">{{ c.libelle }} ({{ c.nb }})</option>{% endfor %}
+          </select>
+          <p class="aide">Les {{ d.questions|length }} questions de ce besoin y seront déplacées. L'analyse automatique ne les séparera plus.</p>
+          <button class="bouton bouton-secondaire" type="submit">Rassembler</button>
+        </form>
+      </details>
+
+      <form class="champ-compact" method="post" action="/trous/{{ g.id }}/reverifier">
+        <input type="hidden" name="retour" value="{{ retour }}">
+        <button class="bouton bouton-secondaire" type="submit">Vérifier à nouveau dans la base</button>
+        <p class="aide">Utile après avoir ajouté un document. Prend quelques secondes.</p>
+      </form>
+
+      {% if g.statut != "ecarte" %}
+      <form class="champ-compact" method="post" action="/trous/{{ g.id }}/ecarter">
+        <input type="hidden" name="retour" value="{{ retour }}">
+        <button class="lien-action" type="submit">Écarter ce besoin</button>
+        <p class="aide">Pour une question hors sujet, ou déjà traitée ailleurs. Vous pourrez le rouvrir.</p>
+      </form>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

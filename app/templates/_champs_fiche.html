@@ -1,0 +1,34 @@
+{# Champs d'une fiche, partagés par la relecture et la vérification. `f` : valeurs à afficher. #}
+<div class="champ">
+  <label for="titre">Titre</label>
+  <input id="titre" name="titre" type="text" required maxlength="300" value="{{ f.titre }}">
+</div>
+<div class="champ">
+  <label for="reponse">Réponse pour les habitants</label>
+  <textarea id="reponse" name="reponse" rows="5" required>{{ f.reponse }}</textarea>
+</div>
+<div class="champ">
+  <label for="conditions">Conditions et cas particuliers</label>
+  <textarea id="conditions" name="conditions" rows="3" aria-describedby="aide-conditions">{{ f.conditions }}</textarea>
+  <span class="aide" id="aide-conditions">Laissez vide s'il n'y en a pas.</span>
+</div>
+<div class="champ">
+  <label for="pieces">Pièces à fournir</label>
+  <textarea id="pieces" name="pieces" rows="3" aria-describedby="aide-pieces">{{ f.pieces }}</textarea>
+  <span class="aide" id="aide-pieces">Une pièce par ligne. Laissez vide s'il n'y en a pas.</span>
+</div>
+<div class="champ">
+  <label for="lien_demarche">Lien vers la démarche</label>
+  <input id="lien_demarche" name="lien_demarche" type="url" inputmode="url" value="{{ f.lien_demarche }}" placeholder="https://" aria-describedby="aide-lien">
+  <span class="aide" id="aide-lien">Facultatif.</span>
+</div>
+<div class="champ case">
+  <input id="saisonniere" name="saisonniere" type="checkbox" value="1" {% if saisonniere %}checked{% endif %} aria-describedby="aide-saison">
+  <label for="saisonniere">Cette information change souvent (tarif, date, saison)</label>
+  <span class="aide" id="aide-saison">Nous vous redemanderons de la vérifier dans {{ jours_saison }} jours au lieu de {{ (jours_normal / 30)|round|int }} mois.</span>
+</div>
+<div class="champ">
+  <label for="valide_par">Votre nom</label>
+  <input id="valide_par" name="valide_par" type="text" required autocomplete="name" value="{{ valide_par }}" aria-describedby="aide-nom">
+  <span class="aide" id="aide-nom">Il apparaît comme source de la fiche, avec le service {{ service.nom if service else "" }} et la date.</span>
+</div>

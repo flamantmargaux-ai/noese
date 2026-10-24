@@ -1,0 +1,43 @@
+# Vérité terrain des données de démo Ville-Exemple.
+# attendu : couvert (le site répond) ou trou (volontairement absent du site).
+# Un trou est « retrouvé » si l'outil classe le groupe correspondant en trou ou partiel.
+intentions:
+  - {id: C01, n: 14, attendu: couvert, service: État civil, sujet: "faire ou renouveler une carte d'identité ou un passeport : rendez-vous, pièces, délai, retrait"}
+  - {id: C02, n: 8, attendu: couvert, service: État civil, sujet: "obtenir un acte de naissance ou un extrait d'acte"}
+  - {id: C03, n: 6, attendu: couvert, service: État civil, sujet: "se marier à la mairie : dossier, délai, pièces"}
+  - {id: C04, n: 6, attendu: couvert, service: État civil, sujet: "faire un PACS en mairie"}
+  - {id: C05, n: 8, attendu: couvert, service: Élections, sujet: "s'inscrire sur les listes électorales, changement d'adresse pour voter"}
+  - {id: C06, n: 8, attendu: couvert, service: Élections, sujet: "faire une procuration pour voter"}
+  - {id: C07, n: 5, attendu: couvert, service: État civil, sujet: "recensement citoyen à 16 ans, attestation de recensement"}
+  - {id: C08, n: 8, attendu: couvert, service: Enfance, sujet: "est-ce que l'enfant peut manger à la cantine le mercredi"}
+  - {id: C09, n: 10, attendu: couvert, service: Enfance, sujet: "inscrire son enfant à la cantine, annuler ou réserver un repas"}
+  - {id: C10, n: 5, attendu: couvert, service: Enfance, sujet: "voir les menus de la cantine"}
+  - {id: C11, n: 8, attendu: couvert, service: Enfance, sujet: "horaires de la garderie du matin et du soir à l'école, étude surveillée"}
+  - {id: C12, n: 9, attendu: couvert, service: Enfance, sujet: "inscrire son enfant au centre de loisirs pendant les vacances ou le mercredi"}
+  - {id: C13, n: 8, attendu: couvert, service: Enfance, sujet: "inscrire son enfant à l'école maternelle, dérogation de carte scolaire"}
+  - {id: C14, n: 8, attendu: couvert, service: Petite enfance, sujet: "demander une place en crèche, quand faire la demande"}
+  - {id: C15, n: 12, attendu: couvert, service: Déchets, sujet: "quel jour passe le camion poubelle, jours de collecte du bac jaune et gris, jours fériés"}
+  - {id: C16, n: 14, attendu: couvert, service: Déchets, sujet: "ramassage des encombrants, prendre rendez-vous, se débarrasser d'un canapé ou matelas"}
+  - {id: C17, n: 12, attendu: couvert, service: Déchets, sujet: "horaires de la déchèterie et badge d'accès"}
+  - {id: C18, n: 8, attendu: couvert, service: Déchets, sujet: "ramassage des déchets verts, sacs pour les tontes et branches"}
+  - {id: C19, n: 6, attendu: couvert, service: Déchets, sujet: "poubelle cassée ou volée, obtenir un nouveau bac"}
+  - {id: C20, n: 7, attendu: couvert, service: Voirie, sujet: "carte de stationnement résidant, prix"}
+  - {id: C21, n: 7, attendu: couvert, service: Voirie, sujet: "signaler un nid-de-poule, un lampadaire en panne, un dépôt sauvage"}
+  - {id: C22, n: 10, attendu: couvert, service: Sports, sujet: "horaires et prix de la piscine municipale"}
+  - {id: C23, n: 6, attendu: couvert, service: Culture, sujet: "s'inscrire et horaires de la médiathèque"}
+  - {id: C24, n: 7, attendu: couvert, service: Vie associative, sujet: "louer la salle des fêtes pour un anniversaire ou un mariage, prix"}
+  - {id: C25, n: 5, attendu: couvert, service: Police municipale, sujet: "objets trouvés, j'ai perdu mes clés ou mon portefeuille"}
+  - {id: C26, n: 5, attendu: couvert, service: Police municipale, sujet: "opération tranquillité vacances, surveillance de la maison pendant les vacances"}
+  - {id: C27, n: 10, attendu: couvert, service: Accueil, sujet: "horaires d'ouverture de la mairie, ouverte le samedi"}
+  - {id: C28, n: 6, attendu: couvert, service: Action sociale, sujet: "demander une aide au CCAS, aide alimentaire, facture d'électricité impayée"}
+  - {id: C29, n: 4, attendu: couvert, service: Cimetières, sujet: "acheter ou renouveler une concession au cimetière, prix"}
+  - {id: H01, n: 12, attendu: trou, service: Urbanisme, sujet: "déclaration préalable de travaux : délai d'instruction, quand en faut-il une (fenêtres, ravalement, véranda)"}
+  - {id: H02, n: 9, attendu: trou, service: Urbanisme, sujet: "permis de construire : pièces à fournir, délai, où déposer"}
+  - {id: H03, n: 9, attendu: trou, service: Urbanisme, sujet: "règles pour construire une clôture, un mur ou un abri de jardin : hauteur autorisée, autorisation"}
+  - {id: H04, n: 7, attendu: trou, service: Urbanisme, sujet: "consulter le PLU, savoir dans quelle zone est mon terrain, terrain constructible"}
+  - {id: H05, n: 6, attendu: trou, service: Urbanisme, sujet: "faire construire une piscine dans son jardin : faut-il une autorisation"}
+  - {id: H06, n: 9, attendu: trou, service: Enfance, sujet: "combien coûte la garderie périscolaire (matin, soir, étude) pour 2026"}
+  - {id: H07, n: 8, attendu: trou, service: Enfance, sujet: "tarifs de la cantine pour la rentrée 2026-2027, augmentation des prix 2026"}
+  - {id: H08, n: 8, attendu: trou, service: Police municipale, sujet: "bruit des voisins, horaires autorisés pour tondre la pelouse ou bricoler"}
+  - {id: H09, n: 5, attendu: trou, service: Espaces verts, sujet: "louer une parcelle dans les jardins familiaux ou un potager partagé"}
+  - {id: H10, n: 6, attendu: trou, service: Action sociale, sujet: "mutuelle communale, complémentaire santé proposée par la ville"}
