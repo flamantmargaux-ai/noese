@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
-  <title>{% block titre %}Une question d'habitant{% endblock %} · état de l'art</title>
+  <title>{% block titre %}Une question d'habitant{% endblock %} · État de l’Art</title>
   <link rel="stylesheet" href="/static/css/noese.css?v={{ version_statique }}">
   <script src="/static/js/dictee.js?v={{ version_statique }}" defer></script>
 </head>
@@ -14,8 +14,7 @@
   <header class="entete">
     <div class="conteneur conteneur-etroit">
       <span class="marque">
-        <span class="logo" aria-hidden="true"><span class="logo-e">e</span>tat de l'art</span>
-        <span class="sr-only">état de l'art</span>
+        {% include "_logo.html" %}
         <span class="produit">Le Jardinier</span>
       </span>
     </div>

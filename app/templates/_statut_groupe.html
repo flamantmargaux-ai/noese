@@ -1,6 +1,4 @@
 {% set g = l.groupe if l else g %}
-<span class="statut">
-  {% if g.statut == "ecarte" %}<span class="pastille pastille-neutre"></span>Écarté
-  {% elif g.statut in ("demande", "repondu") %}<span class="pastille pastille-neutre"></span>{{ "Demandé" if g.statut == "demande" else "Répondu" }}
-  {% else %}<span class="pastille pastille-{{ g.verdict or 'neutre' }}"></span>{{ VERDICTS[g.verdict] }}{% endif %}
-</span>
+{% if g.statut == "ecarte" %}<span class="statut statut-neutre">Écarté</span>
+{% elif g.statut in ("demande", "repondu") %}<span class="statut statut-neutre">{{ "Demandé" if g.statut == "demande" else "Répondu" }}</span>
+{% else %}<span class="statut statut-{{ g.verdict or 'neutre' }}">{{ VERDICTS[g.verdict] }}</span>{% endif %}

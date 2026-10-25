@@ -8,12 +8,10 @@
     <li style="padding: var(--espace-s) 0">
       <div class="ligne" style="padding:0">
         <div>{{ imp.libelle }}<div class="meta">{{ imp.cree_le.strftime("%d/%m/%Y à %H h %M") }}</div></div>
-        <span class="statut">
-          {% if imp.statut == "termine" %}<span class="pastille pastille-neutre"></span>Terminé
-          {% elif imp.statut == "erreur" %}<span class="pastille pastille-trou"></span>Arrêté
-          {% elif imp.statut == "en_cours" %}<span class="pastille pastille-neutre"></span>En cours
-          {% else %}<span class="pastille pastille-neutre"></span>En attente{% endif %}
-        </span>
+        {% if imp.statut == "termine" %}<span class="statut statut-couvert">Terminé</span>
+        {% elif imp.statut == "erreur" %}<span class="statut statut-trou">Arrêté</span>
+        {% elif imp.statut == "en_cours" %}<span class="statut statut-nouveau">En cours</span>
+        {% else %}<span class="statut statut-neutre">En attente</span>{% endif %}
       </div>
       {% if imp.statut in ("en_attente", "en_cours") %}
         {% set pct = (100 * imp.fait / imp.total)|round|int if imp.total else none %}

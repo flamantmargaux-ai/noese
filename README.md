@@ -1,6 +1,6 @@
 # Noèse, le Jardinier
 
-Un outil du Lab **état de l'art** pour garder à jour la base de connaissances qu'utilisent les chatbots, callbots et assistants de réponse d'une collectivité.
+Un outil du Labo d’**État de l’Art** pour garder à jour la base de connaissances qu'utilisent les chatbots, callbots et assistants de réponse d'une collectivité.
 
 Noèse ne parle pas aux habitants. Il aide les agents à voir ce que la base ne sait pas, à demander la bonne information au bon service, et à garder les fiches fraîches. La base validée s'exporte vers n'importe quel outil (chatbot, callbot, assistant mail).
 
@@ -55,7 +55,7 @@ Noèse ne parle pas aux habitants. Il aide les agents à voir ce que la base ne 
 | Du mail à la fiche validée en moins de 3 minutes sur mobile | 57 s et 54 s lors de deux parcours chronométrés (saisie au clavier, dont 6 à 8 s d'attente du modèle) |
 | Aucune fiche dans la base sans validation humaine | Contrainte en base, plus des tests sur la proposition, la validation sans nom, le réimport et l'export |
 | Export JSON et Markdown lisibles et réimportables | Tests d'aller-retour sur Markdown, JSON et CSV |
-| Contrastes 4,5:1 dans les deux thèmes, navigation au clavier | `scripts/contrastes.py` (tous au-dessus de 4,5:1) ; parcours au clavier vérifiés sur la liste des trous et la page de réponse |
+| Contrastes 4,5:1, navigation au clavier | `scripts/contrastes.py` (tous au-dessus de 4,5:1, étiquettes de statut comprises) ; parcours au clavier vérifiés sur la liste des trous et la page de réponse |
 | `docker compose up` lance tout, README en français | Fichiers écrits, **mais pas encore testés** : Docker n'était pas disponible sur la machine de développement |
 
 ## Limites connues
@@ -99,9 +99,10 @@ Le worker tourne alors dans le même processus. Avec Docker, il tourne dans son 
 
 1. **L'IA prépare, l'agent valide.** Une contrainte de la base de données interdit d'enregistrer une version de fiche validée sans nom de validateur ni date.
 2. **Toujours une source.** Un groupe n'est classé « couvert » ou « partiel » que s'il cite au moins un extrait réellement trouvé dans la base. Sinon, c'est un trou.
-3. **Souverain.** Un seul format d'API (compatible OpenAI) pour changer de fournisseur : Mistral par défaut, l'API Albert de l'État ou un modèle auto-hébergé. Les polices et les scripts sont servis par l'application, sans appel à un CDN.
-4. **Léger.** FastAPI, gabarits rendus côté serveur, HTMX (50 Ko), une seule base PostgreSQL (qui sert aussi de file de tâches), aucun framework front.
-5. **Accessible.** RGAA comme plancher : contrastes vérifiés dans les deux thèmes, focus visible, navigation au clavier, libellés explicites.
+3. **Souverain.** Un seul format d'API (compatible OpenAI) pour changer de fournisseur : Mistral par défaut, l'API Albert de l'État ou un modèle auto-hébergé. Les scripts sont servis par l'application, sans appel à un CDN, et l'interface utilise la police système.
+4. **Même identité que le site.** La charte reprend celle d'[etatdelart.ai](https://etatdelart.ai/) : police système, encre `#0B0B0C`, panneaux `#F5F5F7`, bleu-violet `#3D3BD4` pour l'action, étiquettes de statut vertes, ambre et rouges. Les valeurs sont posées en variables au début de `app/static/css/noese.css`.
+5. **Léger.** FastAPI, gabarits rendus côté serveur, HTMX (50 Ko), une seule base PostgreSQL (qui sert aussi de file de tâches), aucun framework front.
+6. **Accessible.** RGAA comme plancher : contrastes vérifiés, focus visible, navigation au clavier, libellés explicites.
 
 ## Fournisseur de modèles
 
@@ -131,7 +132,7 @@ L'évaluation compare les verdicts à `demo/verite_terrain.yaml` : au moins 80 %
 ```
 app/            application (modèles, analyse, import, worker, pages)
 app/templates/  gabarits Jinja
-app/static/     CSS, polices Jost et Inter, HTMX
+app/static/     CSS, HTMX, script de dictée
 demo/           Ville-Exemple : site, questions, mails, vérité terrain
 scripts/        génération des données de démo, évaluation
 tests/          tests automatisés
@@ -139,6 +140,6 @@ tests/          tests automatisés
 
 ## Licence
 
-Noèse est un logiciel libre publié par état de l'art sous la [licence publique de l'Union européenne (EUPL) v. 1.2](LICENSE). Le texte officiel en français est dans le fichier `LICENSE` ; les versions de l'EUPL dans toutes les langues de l'Union ont la même valeur.
+Noèse est un logiciel libre publié par État de l’Art sous la [licence publique de l'Union européenne (EUPL) v. 1.2](LICENSE). Le texte officiel en français est dans le fichier `LICENSE` ; les versions de l'EUPL dans toutes les langues de l'Union ont la même valeur.
 
-Les polices Jost et Inter sont distribuées sous licence SIL Open Font License 1.1, et HTMX sous licence BSD zéro clause (0BSD).
+HTMX est distribué sous licence BSD zéro clause (0BSD). L'interface utilise la police système de l'appareil, comme le site d'État de l’Art : aucune police n'est téléchargée.

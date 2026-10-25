@@ -1,14 +1,25 @@
-"""Vérifie les contrastes texte/fond de la charte dans les deux thèmes (RGAA : 4,5:1 pour le texte).
+"""Vérifie les contrastes texte/fond de la charte (RGAA : 4,5:1 pour le texte).
 Les couleurs sont lues dans app/static/css/noese.css. Usage : uv run python -m scripts.contrastes"""
 import re
 import sys
 from pathlib import Path
 
 CSS = (Path(__file__).resolve().parent.parent / "app/static/css/noese.css").read_text()
-PAIRES = [  # (texte, fond)
-    ("encre", "fond"), ("encre", "fond-doux"), ("encre-douce", "fond"), ("encre-douce", "fond-doux"),
-    ("cobalt", "fond"), ("cobalt", "fond-doux"), ("sur-encre", "encre"), ("sur-pop", "atome"),
-    ("sur-pop", "lagon"), ("sur-pop", "soleil"), ("sur-cobalt", "cobalt"),
+PAIRES = [  # (texte, fond, usage)
+    ("encre", "fond", "texte courant"),
+    ("encre", "fond-doux", "texte sur panneau, bouton secondaire"),
+    ("encre-texte", "fond", "chapeaux"),
+    ("encre-douce", "fond", "légendes, surtitres"),
+    ("encre-douce", "fond-doux", "légendes dans un panneau"),
+    ("accent", "fond", "liens"),
+    ("accent", "fond-doux", "liens dans un panneau"),
+    ("sur-encre", "accent", "bouton principal"),
+    ("sur-encre", "accent-survol", "bouton principal survolé"),
+    ("accent", "accent-doux", "onglet actif, étiquette « en cours »"),
+    ("ok-texte", "ok-fond", "étiquette couvert"),
+    ("ambre-texte", "ambre-fond", "étiquette partiel"),
+    ("rouge-texte", "rouge-fond", "étiquette trou"),
+    ("gris-texte", "gris-fond", "étiquette neutre"),
 ]
 
 
@@ -28,16 +39,13 @@ def ratio(a: str, b: str) -> float:
 
 
 def main() -> int:
-    clair = jetons(CSS.split("@media")[0])
-    sombre = {**clair, **jetons(CSS.split(':root[data-theme="dark"]')[1].split("}")[0])}
+    theme = jetons(CSS.split(":root {", 1)[1].split("}", 1)[0])
     echecs = 0
-    for nom, theme in (("clair", clair), ("sombre", sombre)):
-        print(f"Thème {nom}")
-        for texte, fond in PAIRES:
-            r = ratio(theme[texte], theme[fond])
-            ok = r >= 4.5
-            echecs += not ok
-            print(f"  {texte:<12} sur {fond:<10} {r:5.2f}:1  {'ok' if ok else 'INSUFFISANT'}")
+    for texte, fond, usage in PAIRES:
+        r = ratio(theme[texte], theme[fond])
+        ok = r >= 4.5
+        echecs += not ok
+        print(f"  {texte:<12} sur {fond:<14} {r:5.2f}:1  {'ok' if ok else 'INSUFFISANT'}  ({usage})")
     return 1 if echecs else 0
 
 

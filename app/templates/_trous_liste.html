@@ -28,7 +28,7 @@
 </ul>
 {% elif filtres.statut == "a_traiter" and not filtres.q and not filtres.service %}
 <div class="vide">
-  {% with couleur="lagon" %}{% include "_illustration.html" %}{% endwith %}
+  {% with couleur="ok" %}{% include "_illustration.html" %}{% endwith %}
   <p class="chapeau">Aucun trou à traiter. La base répond aux questions importées. Importez de nouvelles questions pour vérifier qu'elle reste à jour.</p>
 </div>
 {% endif %}
