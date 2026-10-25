@@ -1,6 +1,6 @@
 # Noèse, le Jardinier
 
-Un outil du Lab **état de l'art** pour garder à jour la base de connaissances qu'utilisent les chatbots, callbots et assistants de réponse d'une collectivité.
+Un outil du Labo d’**État de l’Art** pour garder à jour la base de connaissances qu'utilisent les chatbots, callbots et assistants de réponse d'une collectivité.
 
 Noèse ne parle pas aux habitants. Il aide les agents à voir ce que la base ne sait pas, à demander la bonne information au bon service, et à garder les fiches fraîches. La base validée s'exporte vers n'importe quel outil (chatbot, callbot, assistant mail).
 
@@ -140,6 +140,6 @@ tests/          tests automatisés
 
 ## Licence
 
-Noèse est un logiciel libre publié par état de l'art sous la [licence publique de l'Union européenne (EUPL) v. 1.2](LICENSE). Le texte officiel en français est dans le fichier `LICENSE` ; les versions de l'EUPL dans toutes les langues de l'Union ont la même valeur.
+Noèse est un logiciel libre publié par État de l’Art sous la [licence publique de l'Union européenne (EUPL) v. 1.2](LICENSE). Le texte officiel en français est dans le fichier `LICENSE` ; les versions de l'EUPL dans toutes les langues de l'Union ont la même valeur.
 
 HTMX est distribué sous licence BSD zéro clause (0BSD). L'interface utilise la police système de l'appareil, comme le site d'État de l’Art : aucune police n'est téléchargée.
