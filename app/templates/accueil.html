@@ -28,7 +28,7 @@
       {% for x in signales %}
       <li class="ligne">
         <div><a href="{{ x.lien }}">{{ x.titre }}</a><div class="meta">{{ x.nature }} · {{ x.qui }} · depuis le {{ x.depuis|date_fr }}</div></div>
-        <span class="statut"><span class="pastille pastille-partiel"></span>Signalé</span>
+        <span class="statut statut-partiel">Signalé</span>
       </li>
       {% endfor %}
     </ul>
@@ -41,7 +41,7 @@
       {% for g in trous %}
       <li class="ligne">
         <div><a href="/trous/{{ g.id }}">{{ g.libelle }}</a><div class="meta">{{ g.service.nom if g.service else "Service à choisir" }} · {{ g.nb }} question{{ "s" if g.nb > 1 }}</div></div>
-        <span class="statut"><span class="pastille pastille-{{ g.verdict }}"></span>{{ VERDICTS[g.verdict] }}</span>
+        <span class="statut statut-{{ g.verdict }}">{{ VERDICTS[g.verdict] }}</span>
       </li>
       {% endfor %}
     </ul>

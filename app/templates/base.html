@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titre %}Noèse{% endblock %} · état de l'art</title>
-  <link rel="preload" href="/static/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <title>{% block titre %}Noèse{% endblock %} · État de l’Art</title>
   <link rel="stylesheet" href="/static/css/noese.css?v={{ version_statique }}">
   <script src="/static/js/htmx.min.js" defer></script>
 </head>
@@ -12,9 +11,9 @@
   <a class="lien-evitement" href="#contenu">Aller au contenu</a>
   <header class="entete">
     <div class="conteneur">
-      <a class="marque" href="/" aria-label="état de l'art, Noèse : accueil">
-        <span class="logo" aria-hidden="true"><span class="logo-e">e</span>tat de l'art</span>
-        <span class="produit" aria-hidden="true">Noèse</span>
+      <a class="marque" href="/" aria-label="État de l’Art, Noèse : accueil">
+        {% include "_logo.html" %}
+        <span class="produit">Noèse</span>
       </a>
       {% if utilisateur %}
       <nav class="nav" aria-label="Navigation principale">
@@ -35,7 +34,7 @@
     </div>
   </main>
   <footer class="pied">
-    <div class="conteneur">Noèse, un outil du Lab état de l'art. Logiciel libre sous licence EUPL 1.2.</div>
+    <div class="conteneur">Noèse, un outil du Labo d’État de l’Art. Logiciel libre sous licence EUPL 1.2.</div>
   </footer>
 </body>
 </html>

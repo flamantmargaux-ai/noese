@@ -7,7 +7,7 @@
 
 {% if erreur %}<div class="message" role="alert">{{ erreur }}</div>{% endif %}
 {% if v.a_verifier and not erreur %}
-<div class="message"><span class="statut"><span class="pastille pastille-partiel"></span>À vérifier</span><p style="margin: 8px 0 0">{{ v.a_verifier }}</p></div>
+<div class="message"><span class="statut statut-partiel">À vérifier</span><p style="margin: 8px 0 0">{{ v.a_verifier }}</p></div>
 {% endif %}
 
 {% if origine %}
