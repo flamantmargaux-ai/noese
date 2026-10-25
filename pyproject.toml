@@ -1,7 +1,7 @@
 [project]
 name = "noese"
 version = "0.1.0"
-description = "Noèse, le Jardinier : garder fraîche la base de connaissances des IA de relation usagers"
+description = "Noèse : la mémoire vivante de la collectivité"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "EUPL-1.2"

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone %}
+{% block titre %}Explorer la mémoire{% endblock %}
+{% block contenu %}
+{% macro lien(maj) -%}/memoire?{{ dict(filtres, **maj)|urlencode }}{%- endmacro %}
+<div class="tete-page">
+  <div>
+    <p class="surtitre">{{ collectivite }}</p>
+    <h1>Explorer la mémoire</h1>
+    <p class="chapeau">Toutes les connaissances de la collectivité, et les sources sur lesquelles elles reposent.</p>
+  </div>
+  <a class="bouton bouton-secondaire" href="/enrichir">{{ icone("enrichir") }}Enrichir la mémoire</a>
+</div>
+
+{% if request.query_params.get("retiree") %}<div class="message" role="status">La source « {{ request.query_params.get("retiree") }} » est retirée de la mémoire. Les connaissances déjà validées à partir d’elle sont conservées.</div>{% endif %}
+
+<form id="filtres" class="recherche-principale" method="get" action="/memoire" role="search" aria-label="Rechercher dans la mémoire"
+      hx-get="/memoire" hx-target="#resultats" hx-push-url="true" hx-trigger="input changed delay:350ms from:#q, change">
+  <label for="q" class="sr-only">Rechercher une question, une règle, une démarche, un service ou un document</label>
+  {{ icone("recherche") }}
+  <input id="q" name="q" type="search" value="{{ filtres.q }}" placeholder="Une question, une règle, une démarche, un document…" autocomplete="off">
+  <input type="hidden" name="service" value="{{ filtres.service }}">
+  <input type="hidden" name="sujet" value="{{ filtres.sujet }}">
+  <noscript><button class="bouton" type="submit">Rechercher</button></noscript>
+</form>
+
+<div class="exploration">
+  <aside class="filtres-colonne" aria-label="Parcourir la mémoire">
+    <h2 class="titre-filtres">{{ icone("service", "icone icone-s") }}Services</h2>
+    <ul class="liste-filtres">
+      <li><a href="{{ lien({'service': ''}) }}" {% if not filtres.service %}aria-current="true"{% endif %}>Tous les services</a></li>
+      {% for sv in services %}<li><a href="{{ lien({'service': sv.id|string, 'sujet': ''}) }}" {% if filtres.service == sv.id|string %}aria-current="true"{% endif %}>{{ sv.nom }}</a></li>{% endfor %}
+      <li><a href="{{ lien({'service': 'aucun', 'sujet': ''}) }}" {% if filtres.service == 'aucun' %}aria-current="true"{% endif %}>Sans service attribué</a></li>
+    </ul>
+    <h2 class="titre-filtres">{{ icone("sujet", "icone icone-s") }}Sujets</h2>
+    {% if sujets %}
+    <ul class="liste-filtres">
+      {% if filtres.sujet %}<li><a href="{{ lien({'sujet': ''}) }}">Tous les sujets</a></li>{% endif %}
+      {% for nom, n in sujets[:12] %}<li><a href="{{ lien({'sujet': nom}) }}" {% if filtres.sujet == nom %}aria-current="true"{% endif %}>{{ nom }} <span class="compte">{{ n }}</span></a></li>{% endfor %}
+    </ul>
+    {% if sujets|length > 12 %}
+    <details class="plus-filtres">
+      <summary class="lien-action">Voir les {{ sujets|length - 12 }} autres sujets</summary>
+      <ul class="liste-filtres">{% for nom, n in sujets[12:] %}<li><a href="{{ lien({'sujet': nom}) }}" {% if filtres.sujet == nom %}aria-current="true"{% endif %}>{{ nom }} <span class="compte">{{ n }}</span></a></li>{% endfor %}</ul>
+    </details>
+    {% endif %}
+    {% else %}<p class="legende">Aucun sujet pour ce service.</p>{% endif %}
+    <p class="legende aide-sujets">Les sujets viennent des questions des habitants et des sources qui y répondent.</p>
+  </aside>
+
+  <div id="resultats" class="resultats">
+    {% include "_memoire_resultats.html" %}
+  </div>
+</div>
+{% endblock %}

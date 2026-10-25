@@ -16,6 +16,15 @@ def nombre_fr(n) -> str:
 
 gabarits.env.filters["nombre"] = nombre_fr
 gabarits.env.filters["date_fr"] = date_fr
+
+
+def _resume(texte, n: int = 180) -> str:
+    from .memoire import resume
+
+    return resume(texte, n)
+
+
+gabarits.env.filters["resume"] = _resume
 VERDICTS = {"couvert": "Couvert", "partiel": "Partiel", "trou": "Trou", None: "À vérifier"}
 gabarits.env.globals["VERDICTS"] = VERDICTS
 # Version des fichiers statiques dans l'URL : les navigateurs rechargent le CSS après une mise à jour.

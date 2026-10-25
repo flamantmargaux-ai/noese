@@ -122,9 +122,9 @@ def test_parcours_complet_par_les_pages(s, besoin):
     s.commit()
     with TestClient(app) as client:
         connecter(client)
-        r = client.post(f"/trous/{besoin.id}/demande", follow_redirects=False, data={
+        r = client.post(f"/lacunes/{besoin.id}/demande", follow_redirects=False, data={
             "question": "Quel est le délai d'instruction d'une déclaration préalable ?",
-            "destinataire_email": "urba@ville.test", "destinataire_nom": "Référent Urbanisme", "retour": "/trous"})
+            "destinataire_email": "urba@ville.test", "destinataire_nom": "Référent Urbanisme", "retour": "/lacunes"})
         assert r.status_code == 303
         with s.begin_nested():
             d = s.scalars(select(Demande)).one()
@@ -150,7 +150,7 @@ def test_parcours_complet_par_les_pages(s, besoin):
             "valide_par": "Camille", "titre": "Délai d'une déclaration préalable", "reponse": "Un mois.",
             "pieces": "Cerfa", "conditions": "", "lien_demarche": ""})
         assert "Votre fiche est dans la base. Nous vous redemanderons de la vérifier le" in r.text
-        detail = client.get(f"/trous/{besoin.id}").text
+        detail = client.get(f"/lacunes/{besoin.id}").text
         assert "Fiche validée" in detail and "Camille" in detail
 
 

@@ -1,0 +1,38 @@
+{# Icônes au trait, cohérentes (24 × 24, trait 1,5). #}
+{% macro icone(nom, classe="icone") -%}
+<svg class="{{ classe }}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+{%- if nom == "apercu" -%}<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="4.5" rx="1.5"/><rect x="13.5" y="11" width="7" height="9.5" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+{%- elif nom == "memoire" -%}<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7.5h8M8 11h6"/>
+{%- elif nom == "enrichir" -%}<circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/>
+{%- elif nom == "lacunes" -%}<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/><path d="M9.2 9.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.4M11 14.6v.1"/>
+{%- elif nom == "reglages" -%}<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+{%- elif nom == "recherche" -%}<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/>
+{%- elif nom == "document" -%}<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>
+{%- elif nom == "page" -%}<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5S9.7 5.9 12 3.5z"/>
+{%- elif nom == "oral" -%}<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>
+{%- elif nom == "saisie" -%}<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>
+{%- elif nom == "questions" -%}<path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/>
+{%- elif nom == "fleche" -%}<path d="M5 12h14M13 6l6 6-6 6"/>
+{%- elif nom == "retour" -%}<path d="M19 12H5M11 18l-6-6 6-6"/>
+{%- elif nom == "valide" -%}<circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.8-5.2"/>
+{%- elif nom == "drapeau" -%}<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>
+{%- elif nom == "source" -%}<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>
+{%- elif nom == "service" -%}<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>
+{%- elif nom == "sujet" -%}<path d="M20 12.6 12.6 20a1.4 1.4 0 0 1-2 0L4 13.4V4h9.4l6.6 6.6a1.4 1.4 0 0 1 0 2z"/><circle cx="8.5" cy="8.5" r="1.2"/>
+{%- elif nom == "horloge" -%}<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+{% macro etiquette(etat) -%}<span class="statut statut-{{ etat.classe }}">{{ etat.libelle }}</span>{%- endmacro %}
+
+{% macro priorite(niveau, PRIORITES) -%}<span class="priorite priorite-{{ niveau }}">{{ PRIORITES[niveau] }}</span>{%- endmacro %}
+
+{# Étapes du parcours d'ajout #}
+{% macro etapes(actuelle) -%}
+<ol class="etapes" aria-label="Étapes">
+  {% for n, nom in [(1, "Fournir"), (2, "Préciser"), (3, "Relire"), (4, "Enregistrer")] %}
+  <li class="{% if n < actuelle %}faite{% elif n == actuelle %}en-cours{% endif %}" {% if n == actuelle %}aria-current="step"{% endif %}><span>{{ n }}</span>{{ nom }}</li>
+  {% endfor %}
+</ol>
+{%- endmacro %}

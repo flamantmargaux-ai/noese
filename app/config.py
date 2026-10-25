@@ -42,7 +42,7 @@ class Config:
     smtp_port: int = int(os.environ.get("NOESE_SMTP_PORT", "1025"))
     smtp_user: str = os.environ.get("NOESE_SMTP_USER", "")
     smtp_password: str = os.environ.get("NOESE_SMTP_PASSWORD", "")
-    smtp_from: str = os.environ.get("NOESE_SMTP_FROM", "jardinier@ville-exemple.test")
+    smtp_from: str = os.environ.get("NOESE_SMTP_FROM", "noese@ville-exemple.test")
 
 
 config = Config()

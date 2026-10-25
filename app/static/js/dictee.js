@@ -11,6 +11,20 @@
     });
   });
 
+  // Zone de dépôt : noms des fichiers choisis, et mise en évidence pendant le glisser-déposer.
+  document.querySelectorAll("[data-zone-depot]").forEach(function (zone) {
+    var champ = zone.querySelector("input[type=file]");
+    var liste = zone.querySelector(".zone-depot-liste");
+    function afficher() {
+      var noms = Array.prototype.map.call(champ.files, function (f) { return f.name; });
+      liste.textContent = noms.length ? noms.length + " fichier" + (noms.length > 1 ? "s" : "") + " : " + noms.join(", ") : "";
+      zone.classList.toggle("remplie", noms.length > 0);
+    }
+    champ.addEventListener("change", afficher);
+    ["dragenter", "dragover"].forEach(function (t) { zone.addEventListener(t, function () { zone.classList.add("survol"); }); });
+    ["dragleave", "drop"].forEach(function (t) { zone.addEventListener(t, function () { zone.classList.remove("survol"); }); });
+  });
+
   var bouton = document.getElementById("dicter");
   if (!bouton) return;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) return;
@@ -21,6 +35,7 @@
   var zone = document.getElementById("texte");
   var champDictee = document.getElementById("dictee");
   var libelle = bouton.querySelector(".libelle");
+  var libelleInitial = libelle.textContent;
   var enregistreur = null, morceaux = [], flux = null, debut = 0, minuteur = null;
 
   function arreterMinuteur() { clearInterval(minuteur); duree.textContent = ""; }
@@ -55,7 +70,7 @@
     arreterMinuteur();
     bouton.setAttribute("aria-pressed", "false");
     bouton.classList.remove("enregistre");
-    libelle.textContent = "Dicter ma réponse";
+    libelle.textContent = libelleInitial;
     bouton.disabled = true;
     statut.textContent = "Transcription en cours…";
     try {

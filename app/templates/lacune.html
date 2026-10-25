@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etiquette, priorite as etiquette_priorite %}
+{% block titre %}{{ g.libelle }}{% endblock %}
+{% block contenu %}
+{% set messages = {
+  "service": "Le service est enregistré.",
+  "libelle": "Le libellé est enregistré.",
+  "ecarte": "Ce besoin est écarté. Il n'apparaît plus dans les lacunes à traiter. Vous pouvez le rouvrir à tout moment.",
+  "rouvert": "Ce besoin est rouvert. Il revient dans les lacunes à traiter.",
+  "reverifie": "La mémoire a été vérifiée à nouveau. Le constat ci-dessous est à jour.",
+  "demande": "La demande est partie au service. Vous la suivez ici, et il sera relancé s'il ne répond pas.",
+  "rassemble": "Les deux besoins sont rassemblés ici. La mémoire a été vérifiée à nouveau pour l'ensemble des questions.",
+  "priorite": "La priorité est enregistrée.",
+  "sujet": "Le sujet est enregistré. Les prochaines analyses le conserveront.",
+  "resolue": "La mémoire couvre désormais ce besoin : la lacune est résolue.",
+  "pas_encore": "La mémoire ne couvre pas encore ce besoin de façon fiable : la lacune reste ouverte. Ajoutez la connaissance qui manque, puis vérifiez de nouveau.",
+} %}
+<p><a class="retour" href="{{ retour }}">{{ icone("retour") }} Lacunes et qualité</a></p>
+<p class="surtitre">{{ g.service.nom if g.service else "Service à préciser" }}{% if g.sujet %} · {{ g.sujet }}{% endif %}</p>
+<h1 class="titre-2">{{ g.libelle }}</h1>
+<p class="ligne-etiquettes">
+  <span class="statut statut-{{ g.verdict or 'neutre' }}">{{ TYPES.get(g.verdict, "À vérifier") }}</span>
+  <span class="statut statut-neutre">{{ LIBELLES_STATUT[g.statut] }}</span>
+  {{ etiquette_priorite(priorite, PRIORITES) }}
+</p>
+<p class="chapeau">
+  {{ d.questions|length }} {{ "questions d’habitants" if d.questions|length > 1 else "question d’habitant" }}{% if d.nb_30j %}, dont {{ d.nb_30j }} ces 30 derniers jours{% endif %}.
+  {% if d.transferts %}{{ d.transferts }} fois, l’outil de réponse a dû passer la main à un agent.{% endif %}
+</p>
+{% if message in messages %}<div class="message" role="status">{{ messages[message] }}</div>{% endif %}
+
+<div class="mise-en-page-detail">
+  <div class="colonne-principale">
+    <section aria-labelledby="t-manque">
+      <h2 class="titre-3" id="t-manque">Ce qui manque à la mémoire</h2>
+      <p class="texte-fiche">{{ g.manque or "La mémoire répond à ce besoin." }}</p>
+    </section>
+
+    <section aria-labelledby="t-contient">
+      <h2 class="titre-3" id="t-contient">Ce que la mémoire contient déjà</h2>
+      {% if g.reponse %}<p class="texte-fiche">{{ g.reponse }}</p>{% endif %}
+      {% for src in g.sources %}
+        <div class="citation">
+          <p style="margin-bottom: 4px">[{{ src.n }}] {% if liens_sources.get(src.n) %}<a href="{{ liens_sources[src.n] }}">{{ src.titre }}</a>{% else %}{{ src.titre }}{% endif %}</p>
+          <p class="legende">{{ src.texte|resume(260) }}</p>
+        </div>
+      {% else %}
+        <p class="legende">Aucune source de la mémoire ne traite ce besoin.</p>
+      {% endfor %}
+      {% if connaissances %}
+      <ul class="liste" style="margin-top: var(--espace-s)">
+        {% for l in connaissances %}<li><a class="ligne-lien" href="/memoire/connaissances/{{ l.fiche.id }}"><div><span class="titre-ligne">{{ l.version.titre }}</span><span class="meta">{{ l.provenance }}</span></div>{{ etiquette(l.etat) }}</a></li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% if g.juge_le %}<p class="legende">Vérifié dans la mémoire le {{ g.juge_le|date_fr }}.</p>{% endif %}
+    </section>
+
+    <section aria-labelledby="t-questions">
+      <h2 class="titre-3" id="t-questions">Ce que demandent les habitants</h2>
+      <p class="legende">
+        {% if d.premiere %}Du {{ d.premiere|date_fr }} au {{ d.derniere|date_fr }}. {% endif %}
+        Canaux : {% for canal, n in d.canaux %}{{ canal }} ({{ n }}){{ ", " if not loop.last }}{% endfor %}.
+      </p>
+      <ul class="liste questions">
+        {% for q in d.questions %}
+        {% if loop.index == 9 %}</ul><details class="plus"><summary class="bouton bouton-secondaire">Voir les {{ d.questions|length - 8 }} autres questions</summary><ul class="liste questions">{% endif %}
+        <li>
+          <p>{{ q.texte }}</p>
+          <p class="meta">{{ q.date|date_fr if q.date else "Date inconnue" }}{% if q.canal %} · {{ q.canal }}{% endif %}{% if q.transfere %} · passée à un agent{% endif %}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% if d.questions|length > 8 %}</details>{% endif %}
+    </section>
+  </div>
+
+  <aside class="colonne-actions" aria-label="Passer à l’action">
+    <div class="carte">
+      <h2 class="titre-3">Passer à l’action</h2>
+      {% if g.statut == "ecarte" %}
+        <p>Ce besoin est écarté.</p>
+        <form method="post" action="/lacunes/{{ g.id }}/rouvrir"><input type="hidden" name="retour" value="{{ retour }}">
+          <button class="bouton" type="submit">Rouvrir ce besoin</button></form>
+      {% elif g.statut == "resolu" %}
+        <p>{{ icone("valide", "icone icone-s") }} Ce besoin est couvert par la mémoire.</p>
+      {% else %}
+        <div class="pile">
+          <a class="bouton" href="/enrichir/saisie?lacune={{ g.id }}">{{ icone("saisie") }}Rédiger la connaissance</a>
+          <a class="bouton bouton-secondaire" href="/enrichir?lacune={{ g.id }}">{{ icone("enrichir") }}Ajouter une source ou un savoir</a>
+          <a class="bouton bouton-secondaire" href="/lacunes/{{ g.id }}/demande?retour={{ retour|urlencode }}">{{ icone("questions") }}Demander au service</a>
+          <p class="aide">Le service reçoit la question par mail et répond sans compte : c’est ainsi qu’on confie la lacune à un responsable.</p>
+        </div>
+        <form class="champ-compact" method="post" action="/lacunes/{{ g.id }}/cloturer" data-attente="Vérification en cours…">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <button class="bouton bouton-secondaire" type="submit">{{ icone("valide") }}Vérifier et clore</button>
+          <p class="aide">Nous vérifions dans la mémoire. La lacune n’est close que si la mémoire couvre désormais le besoin.</p>
+        </form>
+      {% endif %}
+        {% if suivi %}
+        <div class="champ-compact">
+          <p class="surtitre" style="margin:0">Demandes</p>
+          {% for x in suivi %}
+          <div class="suivi-demande">
+            {% if x.fiche and x.fiche.statut == "validee" %}
+              <span class="statut statut-couvert">Fiche validée</span>
+              <p style="margin:0"><a href="/memoire/connaissances/{{ x.fiche.id }}">« {{ x.version.titre }} »</a>, validée par {{ x.version.validee_par }} le {{ x.version.validee_le|date_fr }}.</p>
+            {% elif x.d.statut == "transferee" %}
+              <span class="statut statut-neutre">Transmise</span>
+              <p class="legende" style="margin:0">{{ x.d.destinataire_nom or x.d.destinataire_email }} l’a transmise à un collègue.</p>
+            {% else %}
+              <span class="statut statut-nouveau">{{ "Fiche en relecture" if x.fiche else "En attente de réponse" }}</span>
+              <p style="margin:0">Envoyée le {{ x.d.envoyee_le|date_fr }} à {{ x.d.destinataire_nom or x.d.destinataire_email }}.</p>
+              {% if x.mail and x.mail.statut != "envoye" and x.mail.lien %}
+                <p class="legende" style="margin:0">{% if x.mail.statut == "echec" %}Le mail n’est pas parti : {{ x.mail.erreur }}.{% else %}Envoi des mails désactivé sur cette installation.{% endif %} Transmettez ce lien autrement :</p>
+                <p class="lien-copie">{{ x.mail.lien }}</p>
+              {% endif %}
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+      <form class="champ-compact" method="post" action="/lacunes/{{ g.id }}/priorite">
+        <input type="hidden" name="retour" value="{{ retour }}">
+        <label for="priorite">Priorité</label>
+        <select id="priorite" name="priorite">
+          <option value="" {% if priorite_calculee %}selected{% endif %}>Calculée{% if priorite_calculee %} : {{ PRIORITES[priorite]|lower }}{% endif %}</option>
+          {% for cle, nom in PRIORITES.items() %}<option value="{{ cle }}" {% if not priorite_calculee and priorite == cle %}selected{% endif %}>{{ nom }}</option>{% endfor %}
+        </select>
+        <p class="aide">{{ REGLE_PRIORITE }}</p>
+        <button class="bouton bouton-secondaire" type="submit">Enregistrer la priorité</button>
+      </form>
+
+      <details class="champ-compact">
+        <summary class="lien-action">Autres actions</summary>
+        <form class="pile" method="post" action="/lacunes/{{ g.id }}/service">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="service">Service concerné</label>
+          <select id="service" name="service_id"><option value="">À préciser</option>{% for sv in services %}<option value="{{ sv.id }}" {% if g.service_id == sv.id %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}</select>
+          <button class="bouton bouton-secondaire" type="submit">Enregistrer le service</button>
+        </form>
+        <form class="pile" method="post" action="/lacunes/{{ g.id }}/sujet">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="l-sujet">Sujet</label>
+          <input id="l-sujet" name="sujet" type="text" list="liste-sujets" value="{{ g.sujet }}" aria-describedby="aide-l-sujet">
+          <datalist id="liste-sujets">{% for nom, n in sujets %}<option value="{{ nom }}">{% endfor %}</datalist>
+          <p class="aide" id="aide-l-sujet">{% if g.sujet_fixe %}Choisi par un agent.{% else %}Déduit des questions des habitants.{% endif %} Videz le champ pour revenir au sujet déduit.</p>
+          <button class="bouton bouton-secondaire" type="submit">Enregistrer le sujet</button>
+        </form>
+        <form class="pile" method="post" action="/lacunes/{{ g.id }}/libelle">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="libelle">Formulation du besoin</label>
+          <input id="libelle" name="libelle" type="text" value="{{ g.libelle }}" required maxlength="300">
+          <button class="bouton bouton-secondaire" type="submit">Enregistrer</button>
+        </form>
+        <form class="pile" method="post" action="/lacunes/{{ g.id }}/rassembler">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <label for="cible">Rassembler avec un autre besoin</label>
+          <select id="cible" name="cible_id" required><option value="">Choisissez un besoin</option>{% for c in candidats %}<option value="{{ c.id }}">{{ c.libelle }} ({{ c.nb }})</option>{% endfor %}</select>
+          <p class="aide">Les questions de ce besoin y seront déplacées ; l’analyse automatique ne les séparera plus.</p>
+          <button class="bouton bouton-secondaire" type="submit">Rassembler</button>
+        </form>
+        {% if g.statut != "ecarte" %}
+        <form class="pile" method="post" action="/lacunes/{{ g.id }}/ecarter">
+          <input type="hidden" name="retour" value="{{ retour }}">
+          <button class="lien-action" type="submit">Écarter ce besoin</button>
+          <p class="aide">Pour une question hors sujet, ou traitée ailleurs. Vous pourrez le rouvrir.</p>
+        </form>
+        {% endif %}
+      </details>
+    </div>
+  </aside>
+</div>
+{% endblock %}
+{% block tete %}<script src="/static/js/dictee.js?v={{ version_statique }}" defer></script>{% endblock %}

@@ -90,58 +90,13 @@ def verifier_merci(request: Request, jeton: str):
         return _page_metier(request, "v_merci.html", **_contexte_verif(s, v, fiche, jeton))
 
 
-# ------------------------------------------------------------------ base de fiches (référent base)
+# ------------------------------------------------------------------ outils
 
 
 def _tri_services(s):
     from .trous import cle_tri
 
     return sorted(s.scalars(select(Service)).all(), key=lambda sv: cle_tri(sv.nom))
-
-
-@routeur.get("/fiches", response_class=HTMLResponse)
-def fiches_liste(request: Request, service: str = "", fraicheur: str = "toutes", q: str = ""):
-    fraicheur = fraicheur if fraicheur in fiches.FRAICHEURS else "toutes"
-    with db.session() as s:
-        contexte = {"lignes": fiches.lister(s, service, fraicheur, q), "comptes": fiches.compter(s, service, q),
-                    "services": _tri_services(s), "filtres": {"service": service, "fraicheur": fraicheur, "q": q.strip()},
-                    "FRAICHEURS": fiches.FRAICHEURS}
-        if request.headers.get("HX-Request") and request.headers.get("HX-Target") == "resultats":
-            return page(request, "_fiches_liste.html", **contexte)
-        return page(request, "fiches.html", **contexte)
-
-
-@routeur.get("/fiches/{fiche_id}", response_class=HTMLResponse)
-def fiche_detail(request: Request, fiche_id: int, message: str = ""):
-    with db.session() as s:
-        fiche = s.get(Fiche, fiche_id)
-        if fiche is None or fiche.statut == "brouillon":
-            raise HTTPException(404, "Cette fiche n'existe pas ou n'a pas encore été validée.")
-        fiche.service
-        return page(request, "fiche.html", fiche=fiche, version=fiches.version_validee(s, fiche),
-                    fraicheur=verifications.fraicheur(s, fiche), ouverte=verifications.verification_ouverte(s, fiche),
-                    services=_tri_services(s), message=message, **fiches.historique(s, fiche))
-
-
-@routeur.post("/fiches/{fiche_id}/proprietaire")
-def fiche_proprietaire(fiche_id: int, service_id: str = Form("")):
-    with db.session() as s:
-        fiche = s.get(Fiche, fiche_id)
-        if fiche is None:
-            raise HTTPException(404, "Cette fiche n'existe pas.")
-        fiches.changer_proprietaire(s, fiche, int(service_id) if service_id.isdigit() else None)
-    return RedirectResponse(f"/fiches/{fiche_id}?message=proprietaire", status_code=303)
-
-
-@routeur.post("/fiches/{fiche_id}/verifier")
-def fiche_demander_verification(fiche_id: int):
-    with db.session() as s:
-        fiche = s.get(Fiche, fiche_id)
-        if fiche is None:
-            raise HTTPException(404, "Cette fiche n'existe pas.")
-        v = verifications.demander_verification(s, fiche)
-        message = "verification" if v else ("deja" if verifications.verification_ouverte(s, fiche) else "sans_destinataire")
-    return RedirectResponse(f"/fiches/{fiche_id}?message={message}", status_code=303)
 
 
 # ------------------------------------------------------------------ paramètres

@@ -89,11 +89,18 @@ class Document(Base):
     __tablename__ = "document"
     id: Mapped[int] = mapped_column(primary_key=True)
     import_id: Mapped[int | None] = mapped_column(ForeignKey("import.id", ondelete="SET NULL"))
-    type: Mapped[str] = mapped_column(String(10))  # url | pdf | md | txt
+    type: Mapped[str] = mapped_column(String(10))  # url | pdf | md | txt | docx | oral | saisie
     titre: Mapped[str] = mapped_column(String(300))
     url: Mapped[str] = mapped_column(String(1000), default="")
     contenu: Mapped[str] = mapped_column(Text)
     cree_le: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    service_id: Mapped[int | None] = mapped_column(ForeignKey("service.id", ondelete="SET NULL"))
+    sujet: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    # consultable : indexée, aucune connaissance proposée | a_relire : propositions en attente | traitee : connaissances validées
+    traitement: Mapped[str] = mapped_column(String(15), default="consultable", server_default="consultable")
+    ajoute_par: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    note: Mapped[str] = mapped_column(Text, default="", server_default="")
+    service: Mapped["Service | None"] = relationship()
 
 
 class Extrait(Base):
@@ -115,6 +122,10 @@ class Groupe(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     libelle: Mapped[str] = mapped_column(String(300))
     mots_cles: Mapped[str] = mapped_column(Text, default="")
+    sujet: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    sujet_fixe: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")  # choisi par un agent
+    # Priorité fixée par un agent (importance métier, risque) ; sinon calculée
+    priorite_manuelle: Mapped[str | None] = mapped_column(String(10))
     nb: Mapped[int] = mapped_column(Integer, default=0)
     centroide = mapped_column(Vector(DIM))
     service_id: Mapped[int | None] = mapped_column(ForeignKey("service.id", ondelete="SET NULL"))
@@ -183,6 +194,8 @@ class Fiche(Base):
     service_id: Mapped[int | None] = mapped_column(ForeignKey("service.id", ondelete="SET NULL"))
     groupe_id: Mapped[int | None] = mapped_column(ForeignKey("groupe.id", ondelete="SET NULL"))
     demande_id: Mapped[int | None] = mapped_column(ForeignKey("demande.id", ondelete="SET NULL"))
+    document_id: Mapped[int | None] = mapped_column(ForeignKey("document.id", ondelete="SET NULL"))  # source d'origine
+    sujet: Mapped[str] = mapped_column(String(200), default="", server_default="")
     statut: Mapped[str] = mapped_column(String(15), default="brouillon")
     saisonniere: Mapped[bool] = mapped_column(Boolean, default=False)
     perime_le: Mapped[date | None] = mapped_column(Date)
@@ -190,6 +203,11 @@ class Fiche(Base):
     verifiee_par: Mapped[str] = mapped_column(String(200), default="", server_default="")
     # Questions d'habitants auxquelles la fiche répond vraiment : exemples exportés vers les chatbots.
     questions_exemples: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
+    # Signalement par un agent : erreur, contradiction, information dépassée…
+    signalement_type: Mapped[str] = mapped_column(String(30), default="", server_default="")
+    signalement: Mapped[str] = mapped_column(Text, default="", server_default="")
+    signalee_par: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    signalee_le: Mapped[datetime | None] = mapped_column(DateTime)
     cree_le: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     service: Mapped["Service | None"] = relationship()
     __table_args__ = (CheckConstraint("statut in ('brouillon','validee','archivee')"),)

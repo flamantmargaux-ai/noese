@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etiquette %}
+{% block titre %}Enrichir la mémoire{% endblock %}
+{% block contenu %}
+{% set suffixe = "?lacune=" ~ lacune.id if lacune else "" %}
+<p class="surtitre">{{ collectivite }}</p>
+<h1>Que souhaitez-vous ajouter à la mémoire ?</h1>
+<p class="chapeau">Un document, une page web, le savoir d’un collègue ou une information à noter : tout passe par ici. Nous conservons la source, nous vous proposons les connaissances qu’elle contient, et vous validez.</p>
+
+{% if lacune %}
+<div class="message message-info">Vous complétez la mémoire pour le besoin « <a href="/lacunes/{{ lacune.id }}">{{ lacune.libelle }}</a> »{% if lacune.service %}, service {{ lacune.service.nom }}{% endif %}. Ce que vous ajoutez y sera rattaché.</div>
+{% endif %}
+
+<div class="options">
+  <a class="option" href="/enrichir/document{{ suffixe }}">
+    <span class="option-icone">{{ icone("document") }}</span>
+    <span class="option-titre">Importer un document</span>
+    <span class="option-texte">Une procédure, une délibération, un guide, une fiche pratique.</span>
+    <span class="option-formats">PDF, Word (.docx), Markdown, texte · plusieurs fichiers à la fois</span>
+  </a>
+  <a class="option" href="/enrichir/page{{ suffixe }}">
+    <span class="option-icone">{{ icone("page") }}</span>
+    <span class="option-titre">Ajouter une page web</span>
+    <span class="option-texte">Une page du site de la collectivité ou d’un partenaire.</span>
+    <span class="option-formats">Collez l’adresse, vérifiez-la, puis ajoutez</span>
+  </a>
+  <a class="option" href="/enrichir/oral{{ suffixe }}">
+    <span class="option-icone">{{ icone("oral") }}</span>
+    <span class="option-titre">Transmettre un savoir oral</span>
+    <span class="option-texte">Une pratique, une exception, une situation concrète que vous connaissez.</span>
+    <span class="option-formats">Enregistrez-vous, importez un fichier audio ou écrivez vos notes</span>
+  </a>
+  <a class="option" href="/enrichir/saisie{{ suffixe }}">
+    <span class="option-icone">{{ icone("saisie") }}</span>
+    <span class="option-titre">Ajouter une connaissance</span>
+    <span class="option-texte">Une règle, une procédure, une réponse type, ou une information qui manque ou qui a changé.</span>
+    <span class="option-formats">Écrivez avec vos mots</span>
+  </a>
+</div>
+
+<ol class="explication-parcours" aria-label="Comment ça se passe">
+  <li><strong>Vous fournissez</strong> la source.</li>
+  <li><strong>Vous précisez</strong>, si vous le savez, le service et le sujet.</li>
+  <li><strong>Vous relisez</strong> les connaissances que nous en tirons.</li>
+  <li><strong>Vous validez</strong> : seules les connaissances validées entrent dans la mémoire.</li>
+</ol>
+
+{% set a_relire = recentes|selectattr("etat.cle", "equalto", "a_relire")|list %}
+<section class="section" aria-labelledby="t-recentes">
+  <div class="tete-section">
+    <h2 class="titre-2" id="t-recentes">Ce qui reste à faire</h2>
+    <p class="legende">{% if a_relire %}{{ a_relire|length }} source{{ "s" if a_relire|length > 1 }} récente{{ "s" if a_relire|length > 1 }} {{ "ont" if a_relire|length > 1 else "a" }} des propositions à relire.{% else %}Rien en attente parmi les dernières sources ajoutées.{% endif %}</p>
+  </div>
+  {% if recentes %}
+  <ul class="liste">
+    {% for l in recentes %}
+    <li><a class="ligne-lien" href="{{ '/enrichir/sources/' if l.etat.cle == 'a_relire' else '/memoire/sources/' }}{{ l.document.id }}">
+      <div><span class="titre-ligne">{{ l.document.titre }}</span><span class="meta">{{ l.nature }} · ajoutée le {{ l.document.cree_le|date_fr }}{% if l.document.ajoute_par %} par {{ l.document.ajoute_par }}{% endif %}</span></div>
+      {{ etiquette(l.etat) }}
+    </a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+<div class="encart-secondaire">
+  {{ icone("questions") }}
+  <p>Vous avez un export des questions de vos habitants (chatbot, callbot, mails) ? <a href="/enrichir/questions">Importez-le</a> pour voir ce que la mémoire ne sait pas encore.</p>
+</div>
+{% endblock %}

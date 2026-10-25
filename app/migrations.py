@@ -20,6 +20,21 @@ INSTRUCTIONS = [
     "alter table mail_envoye add column if not exists verification_id integer references verification(id) on delete set null",
     "alter table mail_envoye add column if not exists type varchar(20) not null default 'demande'",
     "alter table fiche add column if not exists questions_exemples json not null default '[]'",
+    # Refonte « mémoire de la collectivité »
+    "alter table document add column if not exists service_id integer references service(id) on delete set null",
+    "alter table document add column if not exists sujet varchar(200) not null default ''",
+    "alter table document add column if not exists traitement varchar(15) not null default 'consultable'",
+    "alter table document add column if not exists ajoute_par varchar(200) not null default ''",
+    "alter table document add column if not exists note text not null default ''",
+    "alter table groupe add column if not exists sujet varchar(200) not null default ''",
+    "alter table groupe add column if not exists priorite_manuelle varchar(10)",
+    "alter table groupe add column if not exists sujet_fixe boolean not null default false",
+    "alter table fiche add column if not exists document_id integer references document(id) on delete set null",
+    "alter table fiche add column if not exists sujet varchar(200) not null default ''",
+    "alter table fiche add column if not exists signalement_type varchar(30) not null default ''",
+    "alter table fiche add column if not exists signalement text not null default ''",
+    "alter table fiche add column if not exists signalee_par varchar(200) not null default ''",
+    "alter table fiche add column if not exists signalee_le timestamp",
 ]
 
 

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone %}
+{% block titre %}Lacunes et qualité{% endblock %}
+{% block contenu %}
+<div class="tete-page">
+  <div>
+    <p class="surtitre">{{ collectivite }}</p>
+    <h1>Lacunes et qualité</h1>
+    <p class="chapeau">Ce que la mémoire ne sait pas encore, ce qui est incomplet, et ce qui doit être vérifié. Chaque lacune se traite en ajoutant ou en corrigeant une connaissance.</p>
+  </div>
+  <a class="bouton" href="/enrichir">{{ icone("enrichir") }}Enrichir la mémoire</a>
+</div>
+
+<dl class="chiffres-ligne" aria-label="Résumé">
+  <a href="/lacunes?type_=trou&service={{ filtres.service }}"><dt>Besoins sans réponse</dt><dd>{{ resume.sans_reponse }}</dd></a>
+  <a href="/lacunes?type_=partiel&service={{ filtres.service }}"><dt>Réponses incomplètes</dt><dd>{{ resume.incompletes }}</dd></a>
+  <a href="/lacunes?statut=en_cours&service={{ filtres.service }}"><dt>En cours de traitement</dt><dd>{{ resume.en_cours }}</dd></a>
+  <a href="/lacunes?statut=resolu&service={{ filtres.service }}"><dt>Résolues ces 30 jours</dt><dd>{{ resume.resolues_30j }}</dd></a>
+  <a href="/lacunes?vue=qualite&service={{ filtres.service }}"><dt>Connaissances à actualiser</dt><dd>{{ resume.a_actualiser }}</dd></a>
+</dl>
+
+<div class="onglets-vue" role="tablist" aria-label="Type de problème">
+  <a role="tab" href="/lacunes?service={{ filtres.service }}" aria-selected="{{ 'true' if filtres.vue == 'questions' else 'false' }}">{{ icone("questions", "icone icone-s") }} Questions sans réponse fiable</a>
+  <a role="tab" href="/lacunes?vue=qualite&service={{ filtres.service }}" aria-selected="{{ 'true' if filtres.vue == 'qualite' else 'false' }}">{{ icone("horloge", "icone icone-s") }} Connaissances à vérifier</a>
+</div>
+
+{% if filtres.vue == "questions" %}
+<form id="filtres" class="filtres-lacunes" method="get" action="/lacunes" role="search" aria-label="Filtrer les lacunes"
+      hx-get="/lacunes" hx-target="#resultats" hx-push-url="true" hx-trigger="change, input changed delay:350ms from:#recherche">
+  <div><label for="recherche">Rechercher</label><input id="recherche" name="q" type="search" value="{{ filtres.q }}" placeholder="cantine, permis…" autocomplete="off"></div>
+  <div><label for="f-service">Service</label>
+    <select id="f-service" name="service"><option value="">Tous</option>{% for sv in services %}<option value="{{ sv.id }}" {% if filtres.service == sv.id|string %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}<option value="aucun" {% if filtres.service == 'aucun' %}selected{% endif %}>Sans service</option></select></div>
+  <div><label for="f-sujet">Sujet</label>
+    <select id="f-sujet" name="sujet"><option value="">Tous</option>{% for nom, n in sujets %}<option value="{{ nom }}" {% if filtres.sujet == nom %}selected{% endif %}>{{ nom }}</option>{% endfor %}</select></div>
+  <div><label for="f-type">Type</label>
+    <select id="f-type" name="type_"><option value="">Tous</option><option value="trou" {% if filtres.type_ == 'trou' %}selected{% endif %}>Sans réponse</option><option value="partiel" {% if filtres.type_ == 'partiel' %}selected{% endif %}>Réponse incomplète</option></select></div>
+  <div><label for="f-priorite">Priorité</label>
+    <select id="f-priorite" name="priorite"><option value="">Toutes</option>{% for cle, nom in PRIORITES.items() %}<option value="{{ cle }}" {% if filtres.priorite == cle %}selected{% endif %}>{{ nom }}</option>{% endfor %}</select></div>
+  <div><label for="f-statut">Statut</label>
+    <select id="f-statut" name="statut">{% for cle, nom in STATUTS.items() %}<option value="{{ cle }}" {% if filtres.statut == cle %}selected{% endif %}>{{ nom }}</option>{% endfor %}</select></div>
+  <noscript><button class="bouton bouton-secondaire" type="submit">Filtrer</button></noscript>
+</form>
+{% endif %}
+
+<div id="resultats">{% include "_lacunes_resultats.html" %}</div>
+{% endblock %}

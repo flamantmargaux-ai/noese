@@ -138,6 +138,6 @@ def test_pages_export_et_accueil(s, base):
         # Réimport par l'écran d'import : rien de nouveau, tout est déjà présent.
         client.post("/import/documents", files={"fichiers": ("base.md", md, "text/markdown")})
         accueil = client.get("/").text
-        assert "Où un coup de main serait utile" in accueil and "&lt; 1" in accueil and "le jour même" in accueil
+        assert "La mémoire par service" in accueil and "Couverture des questions" in accueil and "Mémoire constituée" in accueil
     with s.begin_nested():
         assert s.scalar(select(func.count(Fiche.id)).where(Fiche.statut == "validee")) == 1

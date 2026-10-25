@@ -84,16 +84,18 @@ def test_pages_liste_detail_et_actions(s):
     s.commit()
     with TestClient(app) as client:
         connecter(client)
-        r = client.get("/trous?statut=a_traiter")
+        r = client.get("/lacunes?statut=a_traiter")
         assert r.status_code == 200 and "Délai déclaration préalable" in r.text and "Horaires piscine" not in r.text
-        partiel = client.get("/trous?statut=couvert", headers={"HX-Request": "true", "HX-Target": "resultats"})
-        assert "<html" not in partiel.text and "Horaires piscine" in partiel.text
-        r = client.get(f"/trous/{g['dp'].id}")
-        assert "5 habitants ont posé cette question" in r.text
-        r = client.post(f"/trous/{g['plu'].id}/ecarter", data={"retour": "/trous"}, follow_redirects=False)
+        partiel = client.get("/lacunes?statut=ecarte", headers={"HX-Request": "true", "HX-Target": "resultats"})
+        assert "<html" not in partiel.text and "Question hors sujet" in partiel.text
+        r = client.get(f"/lacunes/{g['dp'].id}")
+        assert "5 questions d’habitants" in r.text and "Passer à l’action" in r.text
+        r = client.post(f"/lacunes/{g['plu'].id}/ecarter", data={"retour": "/lacunes"}, follow_redirects=False)
         assert r.status_code == 303 and "message=ecarte" in r.headers["location"]
-        r = client.post(f"/trous/{g['dp'].id}/libelle", data={"libelle": "Délai d'instruction d'une déclaration préalable"})
+        r = client.post(f"/lacunes/{g['dp'].id}/libelle", data={"libelle": "Délai d'instruction d'une déclaration préalable"})
         assert "Délai d&#39;instruction d&#39;une déclaration préalable" in r.text
-        assert client.get("/trous/999999").status_code == 404
+        assert client.get("/lacunes/999999").status_code == 404
         # Un paramètre de retour hors de l'application est ignoré.
-        assert 'href="/trous"' in client.get(f"/trous/{g['dp'].id}?retour=https://ailleurs.test").text
+        assert 'href="/lacunes"' in client.get(f"/lacunes/{g['dp'].id}?retour=https://ailleurs.test").text
+        # Les anciennes adresses mènent aux nouvelles.
+        assert client.get(f"/trous/{g['dp'].id}", follow_redirects=False).headers["location"] == f"/lacunes/{g['dp'].id}"

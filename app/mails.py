@@ -20,7 +20,7 @@ def envoyer(s, destinataire: str, objet: str, corps: str, lien: str = "", demand
         s.flush()
         return journal
     msg = EmailMessage()
-    msg["From"] = formataddr(("Le Jardinier", config.smtp_from))
+    msg["From"] = formataddr(("Noèse", config.smtp_from))
     msg["To"] = formataddr((nom_destinataire, destinataire)) if nom_destinataire else destinataire
     msg["Subject"] = objet
     msg["Message-ID"] = make_msgid(domain=config.smtp_from.split("@")[-1])

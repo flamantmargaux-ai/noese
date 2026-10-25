@@ -1,30 +1,45 @@
+{% from "_macros.html" import icone %}
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titre %}Noèse{% endblock %} · État de l’Art</title>
+  <title>{% block titre %}Vue d’ensemble{% endblock %} · Noèse</title>
+  <link rel="icon" href="/favicon.ico" type="image/svg+xml">
   <link rel="stylesheet" href="/static/css/noese.css?v={{ version_statique }}">
   <script src="/static/js/htmx.min.js" defer></script>
+  {% block tete %}{% endblock %}
 </head>
 <body>
   <a class="lien-evitement" href="#contenu">Aller au contenu</a>
   <header class="entete">
-    <div class="conteneur">
-      <a class="marque" href="/" aria-label="État de l’Art, Noèse : accueil">
+    <div class="conteneur entete-ligne">
+      <a class="marque" href="/" aria-label="Noèse, État de l’Art : vue d'ensemble">
         {% include "_logo.html" %}
         <span class="produit">Noèse</span>
       </a>
       {% if utilisateur %}
       <nav class="nav" aria-label="Navigation principale">
-        {% set liens = [("/", "Accueil"), ("/import", "Importer"), ("/trous", "Trous"), ("/fiches", "Fiches"), ("/parametres", "Paramètres")] %}
-        {% for href, nom in liens %}
-        <a href="{{ href }}"{% if courant == href %} aria-current="page"{% endif %}>{{ nom }}</a>
+        {% for href, nom, ic in [("/", "Vue d'ensemble", "apercu"), ("/memoire", "Explorer la mémoire", "memoire"), ("/enrichir", "Enrichir la mémoire", "enrichir"), ("/lacunes", "Lacunes et qualité", "lacunes")] %}
+        <a href="{{ href }}"{% if courant == href %} aria-current="page"{% endif %}>{{ icone(ic) }}<span>{{ nom }}</span></a>
         {% endfor %}
-        <form class="deconnexion" method="post" action="/deconnexion">
-          <button type="submit" class="lien-nav" title="Connecté avec {{ utilisateur.email }}">Se déconnecter</button>
-        </form>
       </nav>
+      <div class="outils">
+        <form class="recherche-entete" role="search" action="/memoire" method="get">
+          <label for="q-entete" class="sr-only">Rechercher dans la mémoire</label>
+          {{ icone("recherche") }}
+          <input id="q-entete" name="q" type="search" placeholder="Rechercher" autocomplete="off">
+        </form>
+        <details class="menu-compte">
+          <summary aria-label="Réglages et compte">{{ icone("reglages") }}</summary>
+          <div class="menu-compte-panneau">
+            <p class="legende" style="margin:0 0 8px">{{ utilisateur.nom or utilisateur.email }}</p>
+            <a href="/parametres">Paramètres</a>
+            <a href="/parametres#export">Exporter la mémoire</a>
+            <form method="post" action="/deconnexion"><button type="submit" class="lien-action">Se déconnecter</button></form>
+          </div>
+        </details>
+      </div>
       {% endif %}
     </div>
   </header>
@@ -34,7 +49,7 @@
     </div>
   </main>
   <footer class="pied">
-    <div class="conteneur">Noèse, un outil du Labo d’État de l’Art. Logiciel libre sous licence EUPL 1.2.</div>
+    <div class="conteneur">Noèse, la mémoire vivante de la collectivité. Un outil du Labo d’État de l’Art, logiciel libre sous licence EUPL 1.2.</div>
   </footer>
 </body>
 </html>

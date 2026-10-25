@@ -1,0 +1,70 @@
+{% from "_macros.html" import icone, etiquette %}
+{% macro lien(maj) -%}/memoire?{{ dict(filtres, **maj)|urlencode }}{%- endmacro %}
+{% set nom_service = (services|selectattr("id", "equalto", filtres.service|int)|first).nom if filtres.service and filtres.service != "aucun" else ("Sans service attribué" if filtres.service == "aucun" else "") %}
+<div class="onglets-vue" role="tablist" aria-label="Type de contenu">
+  <a role="tab" href="{{ lien({'vue': 'connaissances'}) }}" hx-get="{{ lien({'vue': 'connaissances'}) }}" hx-target="#resultats" hx-push-url="true" aria-selected="{{ 'true' if filtres.vue == 'connaissances' else 'false' }}">Connaissances <span class="compte">{{ connaissances|length }}</span></a>
+  <a role="tab" href="{{ lien({'vue': 'sources'}) }}" hx-get="{{ lien({'vue': 'sources'}) }}" hx-target="#resultats" hx-push-url="true" aria-selected="{{ 'true' if filtres.vue == 'sources' else 'false' }}">Sources <span class="compte">{{ sources|length }}</span></a>
+</div>
+<input type="hidden" name="vue" value="{{ filtres.vue }}" form="filtres">
+
+<p class="legende resume-filtres" role="status">
+  {% if filtres.q %}Résultats pour « {{ filtres.q }} »{% else %}Toute la mémoire{% endif %}{% if nom_service %} · {{ nom_service }}{% endif %}{% if filtres.sujet %} · {{ filtres.sujet }}{% endif %}.
+  {% if filtres.q %}Recherche par mots dans les titres et le contenu, y compris leurs variantes (pluriels, conjugaisons).{% endif %}
+  {% if filtres.q or filtres.service or filtres.sujet or filtres.statut %}<a href="/memoire?vue={{ filtres.vue }}">Tout effacer</a>{% endif %}
+</p>
+
+{% if filtres.vue == "connaissances" %}
+  <form class="filtre-ligne" method="get" action="/memoire" hx-get="/memoire" hx-target="#resultats" hx-push-url="true" hx-trigger="change">
+    {% for k in ("q", "service", "sujet", "vue") %}<input type="hidden" name="{{ k }}" value="{{ filtres[k] }}">{% endfor %}
+    <label for="f-statut">Statut</label>
+    <select id="f-statut" name="statut">{% for cle, nom in STATUTS.items() %}<option value="{{ cle }}" {% if filtres.statut == cle %}selected{% endif %}>{{ nom }}</option>{% endfor %}</select>
+    <noscript><button class="bouton bouton-secondaire" type="submit">Filtrer</button></noscript>
+  </form>
+  {% if connaissances %}
+  <ul class="liste">
+    {% for l in connaissances %}
+    <li>
+      <a class="ligne-lien carte-ligne" href="/memoire/connaissances/{{ l.fiche.id }}">
+        <div>
+          <span class="titre-ligne">{{ l.version.titre }}</span>
+          <span class="resume">{{ l.version.reponse|resume }}</span>
+          <span class="meta">{{ l.service or "Service à préciser" }}{% if l.fiche.sujet %} · {{ l.fiche.sujet }}{% endif %} · {{ l.provenance }}{% if l.fiche.verifiee_le %} · vérifiée le {{ l.fiche.verifiee_le|date_fr }}{% elif l.verifiee_le %} · validée le {{ l.verifiee_le|date_fr }}{% endif %}</span>
+        </div>
+        {{ etiquette(l.etat) }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="vide vide-compact">
+    <div>
+      <p>{% if filtres.q or filtres.service or filtres.sujet or filtres.statut %}Aucune connaissance ne correspond.{% else %}Aucune connaissance validée pour l’instant.{% endif %}
+      {% if sources %} La mémoire contient toutefois <a href="{{ lien({'vue': 'sources'}) }}">{{ sources|length }} source{{ "s" if sources|length > 1 }}</a>{% if filtres.q %} sur ce thème{% endif %}.{% endif %}</p>
+      <p class="legende">Une connaissance est une information vérifiée et rédigée pour être réutilisée. Elle naît d’une source, du savoir d’un agent ou de la réponse d’un service.</p>
+      <a class="bouton" href="/enrichir">Enrichir la mémoire</a>
+    </div>
+  </div>
+  {% endif %}
+{% else %}
+  {% if sources %}
+  <ul class="liste">
+    {% for l in sources %}
+    <li>
+      <a class="ligne-lien carte-ligne" href="/memoire/sources/{{ l.document.id }}">
+        <div>
+          <span class="titre-ligne">{{ icone({"Page web": "page", "Savoir oral": "oral", "Saisie d'un agent": "saisie"}.get(l.nature, "document"), "icone icone-s") }} {{ l.document.titre }}</span>
+          <span class="resume">{{ l.document.contenu|resume(150) }}</span>
+          <span class="meta">{{ l.nature }} · {{ l.service or "Service à préciser" }}{% if l.document.sujet %} · {{ l.document.sujet }}{% endif %} · ajoutée le {{ l.document.cree_le|date_fr }}{% if l.document.ajoute_par %} par {{ l.document.ajoute_par }}{% endif %}{% if l.nb_connaissances %} · {{ l.nb_connaissances }} connaissance{{ "s" if l.nb_connaissances > 1 }} validée{{ "s" if l.nb_connaissances > 1 }}{% endif %}</span>
+        </div>
+        <span class="statut statut-{{ l.etat.classe }}">{{ l.etat.libelle }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="vide vide-compact"><div>
+    <p>{% if filtres.q or filtres.service or filtres.sujet %}Aucune source ne correspond.{% else %}Aucune source pour l’instant.{% endif %}</p>
+    <a class="bouton" href="/enrichir">Ajouter une source</a>
+  </div></div>
+  {% endif %}
+{% endif %}

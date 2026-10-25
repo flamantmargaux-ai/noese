@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, priorite %}
+{% block titre %}Vue d’ensemble{% endblock %}
+{% block contenu %}
+<div class="tete-page">
+  <div>
+    <p class="surtitre">{{ collectivite }}{% if demo %} <span class="statut statut-neutre">Données de démonstration</span>{% endif %}</p>
+    <h1>La mémoire de votre collectivité</h1>
+    <p class="chapeau">Ce que la collectivité sait déjà, les questions des habitants qui restent sans réponse fiable, et les connaissances à vérifier.</p>
+  </div>
+  <a class="bouton" href="/enrichir">{{ icone("enrichir") }}Enrichir la mémoire</a>
+</div>
+
+{% if vide %}
+<div class="vide">
+  {% include "_illustration.html" %}
+  <div>
+    <h2 class="titre-3">La mémoire est encore vide</h2>
+    <p>Commencez par ajouter ce que la collectivité sait déjà : un document, une page de votre site, ou le savoir d'un agent. Vous pouvez aussi importer les questions de vos habitants pour voir ce qui manque.</p>
+    <div class="actions">
+      <a class="bouton" href="/enrichir">Enrichir la mémoire</a>
+      <a class="bouton bouton-secondaire" href="/enrichir/questions">Importer des questions d’habitants</a>
+    </div>
+  </div>
+</div>
+{% else %}
+
+<form class="barre-filtres" method="get" action="/" aria-label="Filtrer la vue d'ensemble">
+  <div>
+    <label for="f-service">Service</label>
+    <select id="f-service" name="service" onchange="this.form.submit()">
+      <option value="">Toute la collectivité</option>
+      {% for sv in services %}<option value="{{ sv.id }}" {% if filtres.service == sv.id|string %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}
+      <option value="aucun" {% if filtres.service == "aucun" %}selected{% endif %}>Sans service attribué</option>
+    </select>
+  </div>
+  <div>
+    <label for="f-periode">Questions posées</label>
+    <select id="f-periode" name="periode" onchange="this.form.submit()">
+      {% for cle, nom in PERIODES.items() %}<option value="{{ cle }}" {% if filtres.periode == cle %}selected{% endif %}>{{ nom }}</option>{% endfor %}
+    </select>
+  </div>
+  <noscript><button class="bouton bouton-secondaire" type="submit">Afficher</button></noscript>
+  {% if filtres.service %}<a class="retour" href="/?periode={{ filtres.periode }}">{{ icone("retour") }} Toute la collectivité</a>{% endif %}
+</form>
+
+{% if analyse_en_cours %}<div class="message" role="status">Une analyse est en cours : les chiffres se mettront à jour à la fin. <a href="/enrichir/questions">Suivre l’analyse</a></div>{% endif %}
+
+{% set q = "service=" ~ (filtres.service|urlencode) %}
+<section aria-labelledby="t-indicateurs">
+  <h2 class="sr-only" id="t-indicateurs">Indicateurs</h2>
+  <div class="indicateurs">
+    <a class="indicateur" href="/lacunes?{{ q }}&statut=tous">
+      <span class="indicateur-titre">Couverture des questions</span>
+      {% if i.couverture.taux is not none %}
+      <span class="valeur">{{ i.couverture.taux }}&#8239;%</span>
+      <span class="indicateur-detail">{{ i.couverture.couvertes|nombre }} questions d’habitants sur {{ i.couverture.evaluees|nombre }} ont une réponse fiable dans la mémoire.</span>
+      {% else %}
+      <span class="valeur">—</span>
+      <span class="indicateur-detail">Aucune question d’habitant n’a encore été évaluée{% if service_choisi %} pour ce service{% endif %}.</span>
+      {% endif %}
+    </a>
+    <a class="indicateur" href="/lacunes?{{ q }}">
+      <span class="indicateur-titre">Lacunes de connaissance</span>
+      <span class="valeur">{{ i.sans_reponse }}</span>
+      <span class="indicateur-detail">besoin{{ "s" if i.sans_reponse > 1 }} sans réponse, et {{ i.incompletes }} avec une réponse incomplète. {{ i.questions_lacunes|nombre }} questions concernées.</span>
+    </a>
+    <a class="indicateur" href="/lacunes?vue=qualite&{{ q }}">
+      <span class="indicateur-titre">Connaissances à vérifier</span>
+      <span class="valeur">{{ i.a_verifier }}</span>
+      <span class="indicateur-detail">
+        {% if i.a_verifier %}{{ i.qualite.signalee }} signalée{{ "s" if i.qualite.signalee > 1 }}, {{ i.qualite.depassee }} à la révision dépassée, {{ i.qualite.a_verifier }} à vérifier bientôt.
+        {% else %}Aucune fiche à réviser pour l’instant.{% endif %}
+      </span>
+    </a>
+    <a class="indicateur" href="/memoire?{{ q }}">
+      <span class="indicateur-titre">Mémoire constituée</span>
+      <span class="valeur">{{ i.connaissances }}</span>
+      <span class="indicateur-detail">connaissance{{ "s" if i.connaissances > 1 }} validée{{ "s" if i.connaissances > 1 }}{% if i.propositions %}, {{ i.propositions }} proposée{{ "s" if i.propositions > 1 }} à relire{% endif %}. {{ i.sources }} source{{ "s" if i.sources > 1 }} consultable{{ "s" if i.sources > 1 }}.</span>
+    </a>
+  </div>
+  <p class="legende note-indicateurs">La couverture porte sur les questions réelles des habitants : aucun jeu de questions de référence n’est encore défini. Les contradictions entre sources ne sont pas détectées automatiquement ; elles remontent par les signalements des agents.</p>
+</section>
+
+{% if par_service %}
+<section class="section" id="services" aria-labelledby="t-services">
+  <div class="tete-section">
+    <h2 class="titre-2" id="t-services">La mémoire par service</h2>
+    <p class="legende">Les services n’ont pas le même périmètre ni le même volume de questions : ce tableau montre où se trouve la connaissance et où porter l’effort, pas un classement.</p>
+  </div>
+  <div class="tableau-defilant">
+  <table class="tableau-services">
+    <caption class="sr-only">Connaissances, couverture des questions, lacunes et fiches à vérifier, par service</caption>
+    <thead><tr>
+      <th scope="col">Service</th>
+      <th scope="col" class="nombre">Connaissances validées</th>
+      <th scope="col">Couverture des questions</th>
+      <th scope="col" class="nombre">Lacunes</th>
+      <th scope="col" class="nombre">À vérifier</th>
+      <th scope="col"><span class="sr-only">Accès</span></th>
+    </tr></thead>
+    <tbody>
+      {% for l in par_service %}
+      {% set cle = l.id if l.id is not none else "aucun" %}
+      <tr>
+        <th scope="row"><a href="/?service={{ cle }}&periode={{ filtres.periode }}">{{ l.nom }}</a></th>
+        <td class="nombre">{{ l.connaissances }}</td>
+        <td>
+          {% if l.couverture.taux is not none %}
+          <div class="jauge" role="img" aria-label="{{ l.couverture.taux }} % des questions couvertes">
+            <span class="jauge-piste"><span style="width: {{ l.couverture.taux }}%"></span></span>
+            <span class="jauge-texte">{{ l.couverture.taux }}&#8239;% <span class="legende">({{ l.couverture.couvertes }}/{{ l.couverture.evaluees }})</span></span>
+          </div>
+          {% else %}<span class="legende">Pas de question évaluée</span>{% endif %}
+        </td>
+        <td class="nombre">{% if l.lacunes %}<a href="/lacunes?service={{ cle }}">{{ l.lacunes }}</a>{% else %}0{% endif %}</td>
+        <td class="nombre">{% if l.a_verifier %}<a href="/lacunes?vue=qualite&service={{ cle }}">{{ l.a_verifier }}</a>{% else %}0{% endif %}</td>
+        <td class="nombre"><a class="lien-discret" href="/memoire?service={{ cle }}">Mémoire {{ icone("fleche", "icone icone-s") }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+<div class="deux-colonnes section">
+  <section aria-labelledby="t-surveiller">
+    <div class="tete-section">
+      <h2 class="titre-2" id="t-surveiller">Sujets à surveiller</h2>
+      <p class="legende">Les besoins des habitants que la mémoire couvre mal, par priorité puis par nombre de questions.</p>
+    </div>
+    {% if a_surveiller %}
+    <ul class="liste">
+      {% for l in a_surveiller %}
+      <li>
+        <a class="ligne-lien" href="/lacunes/{{ l.groupe.id }}">
+          <div>
+            <span class="titre-ligne">{{ l.groupe.sujet or l.groupe.libelle }}</span>
+            {% if l.groupe.sujet %}<span class="resume">{{ l.groupe.libelle }}</span>{% endif %}
+            <span class="meta">{{ l.service or "Service à préciser" }} · {{ l.nb }} question{{ "s" if l.nb > 1 }} · {{ LIBELLES_STATUT[l.groupe.statut] }}</span>
+          </div>
+          {{ priorite(l.priorite, PRIORITES) }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    <p style="margin-top: var(--espace-s)"><a href="/lacunes{% if filtres.service %}?service={{ filtres.service }}{% endif %}">Voir toutes les lacunes</a></p>
+    {% else %}
+    <p class="legende">Aucun besoin mal couvert{% if service_choisi %} pour ce service{% endif %}. </p>
+    {% endif %}
+  </section>
+
+  <section aria-labelledby="t-activite">
+    <div class="tete-section">
+      <h2 class="titre-2" id="t-activite">Activité récente</h2>
+      <p class="legende">Ce qui a fait évoluer la mémoire.</p>
+    </div>
+    {% if activite %}
+    <ul class="activite">
+      {% for e in activite %}
+      <li>
+        <span class="activite-icone">{{ icone({"connaissance": "valide", "source": "document", "lacune": "lacunes", "verification": "horloge"}[e.nature]) }}</span>
+        <div><a href="{{ e.lien }}">{{ e.texte }}</a><span class="meta">{{ e.quand|date_fr if e.quand else "" }}</span></div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="legende">Aucune évolution pour l’instant.</p>
+    {% endif %}
+  </section>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone %}
+{% block titre %}Importer des questions d’habitants{% endblock %}
+{% block contenu %}
+<p><a class="retour" href="/enrichir">{{ icone("retour") }} Enrichir la mémoire</a></p>
+<p class="surtitre">{{ collectivite }}</p>
+<h1 class="titre-2">Importer des questions d’habitants</h1>
+<p class="chapeau">Les questions réellement posées par vos habitants montrent ce que la mémoire sait et ce qui lui manque. Nous les regroupons par besoin, puis nous vérifions si la mémoire y répond.</p>
+{% if message == "aucune" %}<div class="message message-alerte" role="alert">Nous n’avons trouvé aucune question à importer. Vérifiez le format du fichier : CSV, .eml, .mbox ou texte.</div>{% endif %}
+
+{% if nb_questions == 0 %}
+<div class="carte-filet" style="margin-bottom: var(--espace-m)">
+  <h2 class="titre-3">Vous voulez d’abord essayer ?</h2>
+  <p>Chargez Ville-Exemple, une commune fictive de 45&#8239;000 habitants : 32 pages de site et 309 questions d’habitants. Ce sont des données de démonstration. L’analyse prend quelques minutes.</p>
+  <form method="post" action="/import/demo"><button class="bouton bouton-secondaire" type="submit">Charger les données de démonstration</button></form>
+</div>
+{% endif %}
+
+<form class="carte" method="post" action="/import/questions" enctype="multipart/form-data" style="max-width: 760px">
+  <p class="legende">Déjà importées : {{ nb_questions|nombre }} questions.</p>
+  <div class="champ">
+    <label for="fichiers-questions">Fichiers</label>
+    <input id="fichiers-questions" name="fichiers" type="file" multiple accept=".csv,.tsv,.eml,.mbox,.txt" aria-describedby="aide-fichiers-questions">
+    <span class="aide" id="aide-fichiers-questions">Export de votre chatbot ou callbot en CSV (date, question, réponse donnée, transfert), ou mails en .eml ou .mbox.</span>
+  </div>
+  <div class="ou">ou</div>
+  <div class="champ">
+    <label for="collage">Copier-coller</label>
+    <textarea id="collage" name="collage" aria-describedby="aide-collage"></textarea>
+    <span class="aide" id="aide-collage">Une question par ligne.</span>
+  </div>
+  <button class="bouton" type="submit">Importer les questions</button>
+</form>
+
+<section class="section" aria-labelledby="titre-suivi">
+  <h2 class="titre-2" id="titre-suivi">Suivi de l’analyse</h2>
+  {% include "_suivi.html" %}
+</section>
+{% endblock %}

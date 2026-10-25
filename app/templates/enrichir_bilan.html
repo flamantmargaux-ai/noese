@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etiquette, etapes %}
+{% block titre %}Documents ajoutés{% endblock %}
+{% block contenu %}
+{{ etapes(3) }}
+<h1 class="titre-2">{{ sources|length }} document{{ "s" if sources|length > 1 }} enregistré{{ "s" if sources|length > 1 }}</h1>
+<p class="chapeau">Ils sont consultables dans la mémoire. Ouvrez-les un par un pour relire les connaissances qu’ils contiennent.</p>
+{% if erreurs %}<div class="message message-alerte" role="alert"><strong>Certains fichiers n’ont pas été ajoutés.</strong> {{ erreurs }}</div>{% endif %}
+<ul class="liste">
+  {% for l in sources %}
+  <li><a class="ligne-lien" href="/enrichir/sources/{{ l.document.id }}{{ '?lacune=' ~ lacune.id if lacune else '' }}">
+    <div><span class="titre-ligne">{{ l.document.titre }}</span><span class="meta">{{ l.nature }} · {{ l.document.contenu|length|nombre }} caractères lus</span></div>
+    <span class="lien-discret">Relire {{ icone("fleche", "icone icone-s") }}</span>
+  </a></li>
+  {% endfor %}
+</ul>
+<p class="section-courte"><a class="bouton bouton-secondaire" href="/enrichir">Ajouter autre chose</a></p>
+{% endblock %}

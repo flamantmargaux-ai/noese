@@ -219,7 +219,7 @@ def crawler(url_depart: str, max_pages: int = 200, client: httpx.Client | None =
     """Parcourt un site en restant sur le même domaine (et sous le même chemin de départ)."""
     depart = urlparse(url_depart)
     prefixe = depart.path.rsplit("/", 1)[0] + "/" if not depart.path.endswith("/") else depart.path
-    client = client or httpx.Client(timeout=15, follow_redirects=True, headers={"User-Agent": "Noese-Jardinier/0.1"})
+    client = client or httpx.Client(timeout=15, follow_redirects=True, headers={"User-Agent": "Noese/0.1"})
     a_voir, vus, pages = [url_depart], set(), []
     while a_voir and len(pages) < max_pages:
         url = urldefrag(a_voir.pop(0))[0]

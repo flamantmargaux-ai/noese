@@ -149,10 +149,10 @@ def test_pages_verification_fiches_et_parametres(s, base):
         client.post(f"/v/{jeton}/toujours-juste")
         assert client.get("/v/abcdefghijklmnopqrstuvwxyz012345").status_code == 404
 
-        liste = client.get("/fiches").text
-        assert "Horaires de la déchèterie" in liste and "À jour" in liste
-        detail = client.get(f"/fiches/{fiche.id}").text
-        assert "Confirmée « toujours juste » par Dominique" in detail
+        liste = client.get("/memoire").text
+        assert "Horaires de la déchèterie" in liste and "Validée" in liste
+        detail = client.get(f"/memoire/connaissances/{fiche.id}").text
+        assert "vérifiée par Dominique" in detail
         assert client.get("/parametres").status_code == 200
         client.post("/parametres/fraicheur", data={"peremption_mois": 3, "peremption_saison_jours": 30, "preavis_jours": 10,
                                                    "preavis_saison_jours": 5, "relance_jours_ouvres": 4,

@@ -111,7 +111,7 @@ Répondre (sans compte, sans mot de passe) :
 
 Vous n'êtes pas la bonne personne ? Le même lien vous permet de transmettre la question à un collègue.
 
-Le Jardinier, outil de la base de connaissances de la relation usagers
+Noèse, la mémoire de la collectivité
 """
     return objet, corps
 
@@ -206,7 +206,9 @@ def proposer_fiche(s, d: Demande, texte: str, dictee: bool = False) -> Propositi
         pieces = [pieces]
     fiche = s.scalar(select(Fiche).where(Fiche.demande_id == d.id, Fiche.statut == "brouillon"))
     if fiche is None:
-        fiche = Fiche(service_id=d.service_id, groupe_id=d.groupe_id, demande_id=d.id, statut="brouillon")
+        g = s.get(Groupe, d.groupe_id)
+        fiche = Fiche(service_id=d.service_id, groupe_id=d.groupe_id, demande_id=d.id, statut="brouillon",
+                      sujet=g.sujet if g else "")
         s.add(fiche)
         s.flush()
     # Par prudence, un tarif, un prix ou une année rend la fiche « saisonnière » (vérifiée plus souvent).
@@ -347,5 +349,7 @@ def valider_fiche(s, fiche: Fiche, valide_par: str, titre: str, reponse: str, co
         s.flush()
         analyse.juger_groupe(s, g)
         g.statut = "resolu" if g.verdict == "couvert" else "repondu"
+        if g.statut == "resolu":
+            _journal(s, "lacune_resolue", "groupe", g.id, acteur=valide_par, fiche=fiche.id)
     _journal(s, "fiche_validee", "fiche", fiche.id, acteur=valide_par, version=version.numero)
     return version

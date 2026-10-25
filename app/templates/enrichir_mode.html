@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etapes %}
+{% block titre %}{{ titre_mode }}{% endblock %}
+{% block tete %}<script src="/static/js/dictee.js?v={{ version_statique }}" defer></script>{% endblock %}
+{% block contenu %}
+{% set service_defaut = saisie.service_id if saisie.service_id is defined and saisie.service_id else ((lacune.service_id|string) if lacune and lacune.service_id else "") %}
+{% set sujet_defaut = saisie.sujet if saisie.sujet is defined and saisie.sujet else (lacune.sujet if lacune else "") %}
+<p><a class="retour" href="/enrichir{{ '?lacune=' ~ lacune.id if lacune else '' }}">{{ icone("retour") }} Enrichir la mémoire</a></p>
+{{ etapes(2 if apercu is defined and apercu else 1) }}
+<h1 class="titre-2">{{ titre_mode }}</h1>
+{% if lacune %}<p class="legende">Pour le besoin « <a href="/lacunes/{{ lacune.id }}">{{ lacune.libelle }}</a> ».</p>{% endif %}
+{% if erreur %}<div class="message message-alerte" role="alert">{{ erreur }}</div>{% endif %}
+
+<form class="formulaire-ajout" method="post" action="/enrichir/{{ mode }}" enctype="multipart/form-data" data-attente="Enregistrement et lecture en cours…">
+  <input type="hidden" name="lacune" value="{{ lacune.id if lacune else '' }}">
+
+  {% if mode == "document" %}
+  <div class="champ">
+    <label class="zone-depot" for="fichiers" data-zone-depot>
+      {{ icone("document", "icone icone-l") }}
+      <span class="zone-depot-titre">Déposez vos fichiers ici, ou cliquez pour les choisir</span>
+      <span class="legende">PDF, Word (.docx), Markdown ou texte, jusqu’à 25 Mo chacun. Plusieurs fichiers à la fois.</span>
+      <span class="zone-depot-liste" aria-live="polite"></span>
+      <input id="fichiers" name="fichiers" type="file" multiple accept=".pdf,.docx,.md,.markdown,.txt" required>
+    </label>
+  </div>
+
+  {% elif mode == "page" %}
+    {% if apercu is defined and apercu %}
+    <div class="carte apercu-page">
+      <p class="surtitre">{{ icone("page", "icone icone-s") }} Page récupérée</p>
+      <p class="titre-ligne">{{ apercu.titre }}</p>
+      <p><a href="{{ apercu.url }}">{{ apercu.url }}</a></p>
+      <p class="legende">{{ apercu.texte|resume(420) }}</p>
+      <input type="hidden" name="url" value="{{ apercu.url }}">
+      <input type="hidden" name="confirmer" value="1">
+      <div class="case">
+        <input id="avec_site" name="avec_site" type="checkbox" value="1" aria-describedby="aide-site">
+        <label for="avec_site">Ajouter aussi les pages liées du même site</label>
+        <span class="aide" id="aide-site">Jusqu’à 200 pages, lues en arrière-plan : elles apparaîtront dans les sources au fil de la lecture.</span>
+      </div>
+    </div>
+    <p><a href="/enrichir/page{{ '?lacune=' ~ lacune.id if lacune else '' }}">Changer d’adresse</a></p>
+    {% else %}
+    <div class="champ">
+      <label for="url">Adresse de la page</label>
+      <input id="url" name="url" type="url" inputmode="url" required placeholder="https://www.ville.fr/demarches/…" value="{{ saisie.url or '' }}" aria-describedby="aide-url">
+      <span class="aide" id="aide-url">Nous récupérons la page et vous la montrons avant de l’ajouter.</span>
+    </div>
+    {% endif %}
+
+  {% elif mode == "oral" %}
+  <div class="champ">
+    <label for="titre">De quoi s’agit-il ? <span class="facultatif">facultatif</span></label>
+    <input id="titre" name="titre" type="text" value="{{ saisie.titre or '' }}" placeholder="Par exemple : inscription en crèche en cours d’année">
+  </div>
+  <div class="champ">
+    <label for="texte">Ce qui a été dit</label>
+    <textarea id="texte" name="texte" rows="7" aria-describedby="aide-texte statut-dictee">{{ saisie.texte or '' }}</textarea>
+    <span class="aide" id="aide-texte">Enregistrez-vous avec le bouton ci-dessous : la transcription s’ajoute ici, et vous pouvez la corriger. Vous pouvez aussi écrire directement.</span>
+  </div>
+  <input type="hidden" id="dictee" name="dictee" value="">
+  <div class="dictee">
+    <button id="dicter" class="bouton bouton-secondaire" type="button" aria-pressed="false" data-url="/enrichir/oral/transcrire" hidden>
+      {{ icone("oral") }}<span class="libelle">Enregistrer</span><span class="point-enregistrement" aria-hidden="true"></span>
+      <span id="duree-dictee" class="duree" aria-hidden="true"></span>
+    </button>
+    <p id="statut-dictee" class="aide" role="status"></p>
+  </div>
+  <div class="champ">
+    <label for="audio">Ou importez un enregistrement <span class="facultatif">facultatif</span></label>
+    <input id="audio" name="audio" type="file" accept=".wav,.mp3,.m4a,.ogg,.webm,.flac,audio/*" aria-describedby="aide-audio">
+    <span class="aide" id="aide-audio">Entretien, message vocal, réunion : WAV, MP3, M4A, OGG, WebM ou FLAC. L’enregistrement est transcrit puis n’est pas conservé ; seul le texte l’est.</span>
+  </div>
+  <div class="champ">
+    <label for="notes">Vos notes <span class="facultatif">facultatif</span></label>
+    <textarea id="notes" name="notes" rows="3" placeholder="Le contexte, les exceptions, les cas particuliers.">{{ saisie.notes or '' }}</textarea>
+  </div>
+
+  {% elif mode == "saisie" %}
+  <fieldset class="champ choix">
+    <legend>Vous ajoutez</legend>
+    {% for cle, nom in [("regle", "Une règle ou une procédure"), ("reponse", "Une réponse à une question"), ("changement", "Une information qui manque ou qui a changé")] %}
+    <label class="choix-option"><input type="radio" name="nature" value="{{ cle }}" {% if (saisie.nature or 'regle') == cle %}checked{% endif %}> {{ nom }}</label>
+    {% endfor %}
+  </fieldset>
+  <div class="champ">
+    <label for="titre">La question ou le sujet <span class="facultatif">facultatif</span></label>
+    <input id="titre" name="titre" type="text" value="{{ saisie.titre or (lacune.libelle if lacune else '') }}" placeholder="Par exemple : délai d’instruction d’une déclaration préalable">
+  </div>
+  <div class="champ">
+    <label for="texte">Ce qu’il faut savoir</label>
+    <textarea id="texte" name="texte" rows="8" required placeholder="Avec vos mots, même en style télégraphique : la règle, les étapes, les exceptions, les pièces, les délais.">{{ saisie.texte or '' }}</textarea>
+  </div>
+  {% endif %}
+
+  {% if not (mode == "page" and not (apercu is defined and apercu)) %}
+  <fieldset class="preciser">
+    <legend>Préciser <span class="facultatif">facultatif</span></legend>
+    <div class="grille-2">
+      <div>
+        <label for="service_id">Service concerné</label>
+        <select id="service_id" name="service_id"><option value="">Je ne sais pas</option>{% for sv in services %}<option value="{{ sv.id }}" {% if service_defaut == sv.id|string %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}</select>
+      </div>
+      <div>
+        <label for="sujet">Sujet</label>
+        <input id="sujet" name="sujet" type="text" list="liste-sujets" value="{{ sujet_defaut }}" placeholder="Par exemple : Encombrants">
+        <datalist id="liste-sujets">{% for nom, n in sujets %}<option value="{{ nom }}">{% endfor %}</datalist>
+      </div>
+    </div>
+  </fieldset>
+  {% else %}
+  <input type="hidden" name="service_id" value="{{ service_defaut }}"><input type="hidden" name="sujet" value="{{ sujet_defaut }}">
+  {% endif %}
+
+  <div class="actions">
+    <button class="bouton" type="submit">{{ "Récupérer la page" if mode == "page" and not (apercu is defined and apercu) else ("Ajouter cette page" if mode == "page" else "Enregistrer et continuer") }}</button>
+    <a class="bouton bouton-secondaire" href="/enrichir">Annuler</a>
+  </div>
+  <p class="legende">Ensuite : la source est enregistrée, nous vous proposons les connaissances qu’elle contient, et vous les relisez. Rien n’entre dans la mémoire sans votre validation.</p>
+</form>
+{% endblock %}

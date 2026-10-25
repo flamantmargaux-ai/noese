@@ -441,6 +441,9 @@ def analyser(s, progression: Progression = _rien) -> dict:
     regrouper_questions(s, progression)
     nommer_groupes(s, progression)
     juger_groupes(s, progression)
+    from . import memoire
+
+    memoire.calculer_sujets(s)
     return bilan(s)
 
 

@@ -88,9 +88,9 @@ Une demande envoyée au service {service} reste sans réponse, malgré une relan
 Envoyée le {date_fr(d.envoyee_le)} à {d.destinataire_nom or d.destinataire_email}, relancée le {date_fr(d.relancee_le)}.
 
 Un appel ou un mot de vive voix fait souvent avancer les choses. Vous pouvez aussi envoyer la demande à une autre personne :
-{liens.url('trous', str(d.groupe_id))}
+{liens.url('lacunes', str(d.groupe_id))}
 
-Le Jardinier
+Noèse, la mémoire de la collectivité
 """
 
 
@@ -104,9 +104,9 @@ Une fiche attend sa vérification par le service {service}, malgré une relance 
 Demandée le {date_fr(v.envoyee_le)} à {v.destinataire_nom or v.destinataire_email}, relancée le {date_fr(v.relancee_le)}.
 Si personne ne la confirme, elle sera signalée comme périmée à son échéance.
 
-Voir la fiche : {liens.url('fiches', str(v.fiche_id))}
+Voir la connaissance : {liens.url('memoire/connaissances', str(v.fiche_id))}
 
-Le Jardinier
+Noèse, la mémoire de la collectivité
 """
 
 

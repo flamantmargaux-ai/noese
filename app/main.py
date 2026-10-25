@@ -11,9 +11,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy import func, select
 
-from . import analyse, connexion, db, demo, echeances, export, ingestion, tableau_de_bord, taches
+from . import analyse, connexion, db, demo, echeances, export, ingestion, memoire, tableau_de_bord, taches
 from . import fiches as fiches_
-from . import pages_demandes, pages_fiches
+from . import pages_demandes, pages_fiches, pages_memoire
 from . import trous as trous_
 from .config import RACINE, config
 from .web import page
@@ -28,6 +28,7 @@ async def cycle_de_vie(app: FastAPI):
     with db.session() as s:
         demo.semer_services(s)
         connexion.semer_premier_referent(s)
+        memoire.calculer_sujets(s)
     arret = None
     if os.environ.get("NOESE_WORKER_INTEGRE", "1" if not config.database_url else "0") == "1":
         arret = taches.demarrer_en_arriere_plan()
@@ -40,6 +41,7 @@ app = FastAPI(title="Noèse", lifespan=cycle_de_vie, docs_url=None, redoc_url=No
 app.mount("/static", StaticFiles(directory=ICI / "static"), name="static")
 app.include_router(pages_demandes.routeur)
 app.include_router(pages_fiches.routeur)
+app.include_router(pages_memoire.routeur)
 
 
 @app.middleware("http")
@@ -75,6 +77,16 @@ async def head_comme_get(request: Request, call_next):
     reponse = await call_next(request)
     en_tetes = {k: v for k, v in reponse.headers.items() if k.lower() != "content-length"}
     return Response(status_code=reponse.status_code, headers=en_tetes)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def icone_onglet():
+    """Le pictogramme d'État de l'Art, pour l'onglet du navigateur."""
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" rx="52" fill="#3D3BD4"/>'
+           '<path transform="translate(30 52) scale(0.91)" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" '
+           'stroke-linejoin="round" d="M9.32 90.63 C39.61 90.63, 65.24 81.31, 79.22 53.35 C93.21 25.39, 76.89 2.09, 58.25 11.41 '
+           'C37.28 23.06, 51.26 76.65, 93.21 88.3 C116.51 95.29, 132.82 85.97, 144.47 71.99"/></svg>')
+    return Response(svg, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=86400"})
 
 
 @app.exception_handler(404)
@@ -126,37 +138,6 @@ def deconnexion(request: Request):
     return RedirectResponse("/connexion?message=deconnecte", status_code=303)
 
 
-# ------------------------------------------------------------------ accueil
-
-
-@app.get("/", response_class=HTMLResponse)
-def accueil(request: Request):
-    with db.session() as s:
-        bilan = analyse.bilan(s)
-        trous = s.scalars(
-            select(Groupe).where(Groupe.verdict.in_(("trou", "partiel")), Groupe.statut == "ouvert")
-            .order_by(Groupe.nb.desc()).limit(5)
-        ).all()
-        for g in trous:
-            g.service  # chargement avant fermeture de la session
-        en_cours = s.scalar(select(Import).where(Import.statut.in_(("en_attente", "en_cours"))).limit(1))
-        suivre = echeances.a_suivre(s)
-        signales = [{"titre": d.question, "lien": f"/trous/{d.groupe_id}", "qui": d.destinataire_nom or d.destinataire_email,
-                     "depuis": d.envoyee_le, "nature": "Demande sans réponse"} for d in suivre["demandes"]]
-        for v in suivre["verifications"]:
-            version = fiches_.version_validee(s, s.get(Fiche, v.fiche_id))
-            signales.append({"titre": version.titre if version else "Fiche", "lien": f"/fiches/{v.fiche_id}",
-                             "qui": v.destinataire_nom or v.destinataire_email, "depuis": v.envoyee_le,
-                             "nature": "Vérification sans réponse"})
-        c = tableau_de_bord.chiffres(s)
-        services = tableau_de_bord.par_service(s)
-        for l in services:
-            l.service.nom  # chargé avant la fermeture de la session
-    return page(request, "accueil.html", bilan=bilan, trous=trous, en_cours=en_cours, signales=signales, c=c,
-                delai=tableau_de_bord.chiffre_delai(c["delai_median"]), services=services,
-                formuler_delai=tableau_de_bord.formuler_delai)
-
-
 # ------------------------------------------------------------------ import
 
 
@@ -166,12 +147,6 @@ def _contexte_import(s) -> dict:
         "nb_questions": s.scalar(select(func.count(Question.id))),
         "nb_documents": s.scalar(select(func.count(Document.id))),
     }
-
-
-@app.get("/import", response_class=HTMLResponse)
-def import_page(request: Request, message: str = ""):
-    with db.session() as s:
-        return page(request, "import.html", message=message, **_contexte_import(s))
 
 
 @app.post("/import/questions", response_class=HTMLResponse)
@@ -223,7 +198,7 @@ async def import_questions(request: Request, fichiers: list[UploadFile] | None =
         if csv_a_associer:
             return page(request, "import_colonnes.html", csv=csv_a_associer)
         if not questions:
-            return RedirectResponse("/import?message=aucune", status_code=303)
+            return RedirectResponse("/enrichir/questions?message=aucune", status_code=303)
         libelle = ", ".join(n for n in noms if not n.endswith(".eml"))
         nb_mails = sum(n.endswith(".eml") for n in noms)
         if nb_mails:
@@ -234,7 +209,7 @@ async def import_questions(request: Request, fichiers: list[UploadFile] | None =
         n = analyse.enregistrer_questions(s, imp.id, questions)
         imp.journal = f"{n} questions nouvelles sur {len(questions)} lues."
         taches.planifier(s, "analyser", import_id=imp.id)
-    return RedirectResponse("/import", status_code=303)
+    return RedirectResponse("/enrichir/questions", status_code=303)
 
 
 @app.post("/import/documents", response_class=HTMLResponse)
@@ -275,10 +250,10 @@ async def import_documents(request: Request, fichiers: list[UploadFile] | None =
             taches.planifier(s, "analyser", import_id=imp.id)
         if not noms:
             s.rollback()
-            return RedirectResponse("/import?message=aucune", status_code=303)
+            return RedirectResponse("/enrichir/questions?message=aucune", status_code=303)
         imp.libelle = f"Base : {', '.join(noms)}"[:300]
         imp.journal = " ".join(journal)
-    return RedirectResponse("/import", status_code=303)
+    return RedirectResponse("/enrichir/questions", status_code=303)
 
 
 @app.post("/import/demo")
@@ -286,7 +261,7 @@ def import_demo():
     with db.session() as s:
         imp = demo.charger_tout(s)
         taches.planifier(s, "analyser", import_id=imp.id)
-    return RedirectResponse("/import", status_code=303)
+    return RedirectResponse("/enrichir/questions", status_code=303)
 
 
 @app.get("/import/suivi", response_class=HTMLResponse)
@@ -295,30 +270,7 @@ def import_suivi(request: Request):
         return page(request, "_suivi.html", **_contexte_import(s))
 
 
-# ------------------------------------------------------------------ trous
-
-
-def _filtres(service: str, statut: str, q: str) -> dict:
-    return {"service": service, "statut": statut if statut in trous_.STATUTS else "a_traiter", "q": q.strip()}
-
-
-@app.get("/trous", response_class=HTMLResponse)
-def trous(request: Request, service: str = "", statut: str = "a_traiter", q: str = ""):
-    filtres = _filtres(service, statut, q)
-    with db.session() as s:
-        contexte = {
-            "lignes": trous_.lister(s, filtres["service"], filtres["statut"], filtres["q"]),
-            "comptes": trous_.compter_par_statut(s, filtres["service"], filtres["q"]),
-            "services": trous_.services_avec_compte(s),
-            "sans_service": trous_.sans_service_a_traiter(s),
-            "filtres": filtres,
-            "STATUTS": trous_.STATUTS,
-            "bilan": analyse.bilan(s),
-        }
-        # Requête HTMX : on ne renvoie que la liste.
-        if request.headers.get("HX-Request") and request.headers.get("HX-Target") == "resultats":
-            return page(request, "_trous_liste.html", **contexte)
-        return page(request, "trous.html", **contexte)
+# ------------------------------------------------------------------ actions sur une lacune
 
 
 def _groupe_ou_404(s, groupe_id: int) -> Groupe:
@@ -328,28 +280,14 @@ def _groupe_ou_404(s, groupe_id: int) -> Groupe:
     return g
 
 
-@app.get("/trous/{groupe_id}", response_class=HTMLResponse)
-def trou_detail(request: Request, groupe_id: int, retour: str = "", message: str = ""):
-    with db.session() as s:
-        d = trous_.detail(s, groupe_id)
-        if d is None:
-            raise HTTPException(404, "Ce groupe n'existe plus. Une nouvelle analyse l'a peut-être fusionné avec un autre.")
-        d.groupe.service
-        services = sorted(s.scalars(select(Service)).all(), key=lambda sv: trous_.cle_tri(sv.nom))
-        retour = retour if retour.startswith("/trous") else "/trous"
-        candidats = trous_.candidats_rassemblement(s, d.groupe)
-        return page(request, "trou.html", d=d, g=d.groupe, services=services, retour=retour, message=message,
-                    candidats=candidats, suivi=pages_demandes.suivi_demandes(s, groupe_id))
-
-
 def _revenir(groupe_id: int, retour: str, message: str) -> RedirectResponse:
     from urllib.parse import urlencode
 
-    retour = retour if retour.startswith("/trous") else "/trous"
-    return RedirectResponse(f"/trous/{groupe_id}?{urlencode({'retour': retour, 'message': message})}", status_code=303)
+    retour = retour if retour.startswith("/lacunes") else "/lacunes"
+    return RedirectResponse(f"/lacunes/{groupe_id}?{urlencode({'retour': retour, 'message': message})}", status_code=303)
 
 
-@app.post("/trous/{groupe_id}/service")
+@app.post("/lacunes/{groupe_id}/service")
 def trou_service(groupe_id: int, service_id: str = Form(""), retour: str = Form("")):
     with db.session() as s:
         g = _groupe_ou_404(s, groupe_id)
@@ -357,28 +295,28 @@ def trou_service(groupe_id: int, service_id: str = Form(""), retour: str = Form(
     return _revenir(groupe_id, retour, "service")
 
 
-@app.post("/trous/{groupe_id}/libelle")
+@app.post("/lacunes/{groupe_id}/libelle")
 def trou_libelle(groupe_id: int, libelle: str = Form(...), retour: str = Form("")):
     with db.session() as s:
         trous_.renommer(s, _groupe_ou_404(s, groupe_id), libelle)
     return _revenir(groupe_id, retour, "libelle")
 
 
-@app.post("/trous/{groupe_id}/ecarter")
+@app.post("/lacunes/{groupe_id}/ecarter")
 def trou_ecarter(groupe_id: int, retour: str = Form("")):
     with db.session() as s:
         trous_.ecarter(s, _groupe_ou_404(s, groupe_id))
     return _revenir(groupe_id, retour, "ecarte")
 
 
-@app.post("/trous/{groupe_id}/rouvrir")
+@app.post("/lacunes/{groupe_id}/rouvrir")
 def trou_rouvrir(groupe_id: int, retour: str = Form("")):
     with db.session() as s:
         trous_.rouvrir(s, _groupe_ou_404(s, groupe_id))
     return _revenir(groupe_id, retour, "rouvert")
 
 
-@app.post("/trous/{groupe_id}/rassembler")
+@app.post("/lacunes/{groupe_id}/rassembler")
 def trou_rassembler(groupe_id: int, cible_id: int = Form(...), retour: str = Form("")):
     with db.session() as s:
         source, cible = _groupe_ou_404(s, groupe_id), _groupe_ou_404(s, cible_id)
@@ -387,7 +325,7 @@ def trou_rassembler(groupe_id: int, cible_id: int = Form(...), retour: str = For
     return _revenir(cible_id, retour, "rassemble")
 
 
-@app.post("/trous/{groupe_id}/reverifier")
+@app.post("/lacunes/{groupe_id}/reverifier")
 def trou_reverifier(groupe_id: int, retour: str = Form("")):
     with db.session() as s:
         trous_.reverifier(s, _groupe_ou_404(s, groupe_id))

@@ -28,17 +28,17 @@ def _groupe(s, groupe_id: int) -> Groupe:
 # ------------------------------------------------------------------ côté référent base
 
 
-@routeur.get("/trous/{groupe_id}/demande", response_class=HTMLResponse)
+@routeur.get("/lacunes/{groupe_id}/demande", response_class=HTMLResponse)
 def demande_formulaire(request: Request, groupe_id: int, retour: str = ""):
     with db.session() as s:
         g = _groupe(s, groupe_id)
         g.service
         return page(request, "demande.html", g=g, exemples=demandes.exemples(s, g.id),
-                    nb_30j=demandes.nb_recent(s, g.id), retour=retour if retour.startswith("/trous") else "/trous",
+                    nb_30j=demandes.nb_recent(s, g.id), retour=retour if retour.startswith("/lacunes") else "/lacunes",
                     erreur="")
 
 
-@routeur.get("/trous/{groupe_id}/demande/brouillon", response_class=HTMLResponse)
+@routeur.get("/lacunes/{groupe_id}/demande/brouillon", response_class=HTMLResponse)
 def demande_brouillon(groupe_id: int):
     """Chargé après l'affichage de la page : l'agent n'attend pas le modèle pour voir l'écran."""
     with db.session() as s:
@@ -53,7 +53,7 @@ def demande_brouillon(groupe_id: int):
     return HTMLResponse(escape(question))
 
 
-@routeur.post("/trous/{groupe_id}/demande")
+@routeur.post("/lacunes/{groupe_id}/demande")
 def demande_envoyer(request: Request, groupe_id: int, question: str = Form(""), destinataire_email: str = Form(""),
                     destinataire_nom: str = Form(""), retour: str = Form("")):
     with db.session() as s:
@@ -70,8 +70,8 @@ def demande_envoyer(request: Request, groupe_id: int, question: str = Form(""), 
                         destinataire_email=destinataire_email, destinataire_nom=destinataire_nom)
         d, _ = demandes.creer_demande(s, g, question, destinataire_email, destinataire_nom)
         demande_id = d.id
-    retour = retour if retour.startswith("/trous") else "/trous"
-    return RedirectResponse(f"/trous/{groupe_id}?{urlencode({'retour': retour, 'message': 'demande', 'demande': demande_id})}",
+    retour = retour if retour.startswith("/lacunes") else "/lacunes"
+    return RedirectResponse(f"/lacunes/{groupe_id}?{urlencode({'retour': retour, 'message': 'demande', 'demande': demande_id})}",
                             status_code=303)
 
 

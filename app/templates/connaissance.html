@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etiquette %}
+{% block titre %}{{ v.titre if v else "Connaissance" }}{% endblock %}
+{% block contenu %}
+{% set messages = {
+  "validee": "La connaissance est validée et fait désormais partie de la mémoire.",
+  "corrigee": "La correction est enregistrée : une nouvelle version, signée de votre nom.",
+  "ecartee": "La proposition est écartée. Elle n'entre pas dans la mémoire.",
+  "signalee": "Le signalement est enregistré. La connaissance apparaît dans « Lacunes et qualité », à vérifier.",
+  "levee": "Le signalement est levé.",
+  "classee": "Le service et le sujet sont enregistrés.",
+  "verification": "La demande de vérification est partie au service. Il confirme d'un clic, corrige ou retire la connaissance.",
+  "deja": "Une vérification est déjà en cours.",
+  "sans_destinataire": "Aucun destinataire : renseignez le référent du service dans les paramètres.",
+} %}
+<p>{% if retour %}<a class="retour" href="{{ retour }}">{{ icone("retour") }} Revenir à la relecture de la source</a>{% else %}<a class="retour" href="/memoire">{{ icone("retour") }} Explorer la mémoire</a>{% endif %}</p>
+<p class="surtitre">{{ f.service.nom if f.service else "Service à préciser" }}{% if f.sujet %} · {{ f.sujet }}{% endif %}</p>
+<h1 class="titre-2">{{ v.titre }}</h1>
+<p>{{ etiquette(etat) }}</p>
+
+{% if message in messages %}<div class="message" role="status">{{ messages[message] }}</div>{% endif %}
+{% if request.query_params.get("erreur") %}<div class="message message-alerte" role="alert">{{ request.query_params.get("erreur") }}</div>{% endif %}
+
+{% if etat.cle == "proposee" %}
+<div class="message message-info">
+  <strong>Proposition à relire.</strong> Elle a été rédigée automatiquement à partir de {% if doc %}la source « <a href="/memoire/sources/{{ doc.id }}">{{ doc.titre }}</a> »{% else %}la réponse d’un service{% endif %}. Elle n’entre dans la mémoire qu’une fois validée par un agent.
+</div>
+{% endif %}
+{% if f.signalee_le %}
+<div class="message message-alerte">
+  <p style="margin:0 0 4px"><strong>Signalée : {{ SIGNALEMENTS.get(f.signalement_type, "à vérifier") }}.</strong> Par {{ f.signalee_par or "un agent" }}, le {{ f.signalee_le|date_fr }}.</p>
+  {% if f.signalement %}<p style="margin:0 0 8px">{{ f.signalement }}</p>{% endif %}
+  <form method="post" action="/memoire/connaissances/{{ f.id }}/lever"><button class="lien-action" type="submit">Lever le signalement</button></form>
+</div>
+{% endif %}
+
+<div class="mise-en-page-detail">
+  <div class="colonne-principale">
+    <section aria-labelledby="t-reponse">
+      <h2 class="titre-3" id="t-reponse">Réponse</h2>
+      <p class="texte-fiche">{{ v.reponse }}</p>
+    </section>
+    {% if v.conditions %}
+    <section aria-labelledby="t-conditions">
+      <h2 class="titre-3" id="t-conditions">Conditions, étapes et exceptions</h2>
+      <p class="texte-fiche">{{ v.conditions }}</p>
+    </section>
+    {% endif %}
+    {% if v.pieces %}
+    <section aria-labelledby="t-pieces">
+      <h2 class="titre-3" id="t-pieces">Pièces à fournir</h2>
+      <ul class="exemples">{% for p in v.pieces.splitlines() %}<li>{{ p }}</li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+    {% if v.lien_demarche %}
+    <section aria-labelledby="t-demarche">
+      <h2 class="titre-3" id="t-demarche">Démarche en ligne</h2>
+      <p><a href="{{ v.lien_demarche }}">{{ v.lien_demarche }}</a></p>
+    </section>
+    {% endif %}
+    {% if v.a_verifier %}
+    <section aria-labelledby="t-incertitude">
+      <h2 class="titre-3" id="t-incertitude">Point d’incertitude</h2>
+      <p class="texte-fiche">{{ v.a_verifier }}</p>
+    </section>
+    {% endif %}
+    {% if f.questions_exemples or g %}
+    <section aria-labelledby="t-questions">
+      <h2 class="titre-3" id="t-questions">Questions d’habitants auxquelles elle répond</h2>
+      {% if f.questions_exemples %}<ul class="exemples">{% for q in f.questions_exemples %}<li>{{ q }}</li>{% endfor %}</ul>{% endif %}
+      {% if g %}<p><a href="/lacunes/{{ g.id }}">Voir le besoin « {{ g.libelle }} »</a></p>{% endif %}
+    </section>
+    {% endif %}
+
+    <section class="provenance" aria-labelledby="t-provenance">
+      <h2 class="titre-3" id="t-provenance">{{ icone("source", "icone icone-s") }} D’où vient cette connaissance</h2>
+      <p>{{ provenance }}{% if doc %} · <a href="/memoire/sources/{{ doc.id }}">Ouvrir la source</a>{% endif %}</p>
+      {% if reponse_service %}<p class="citation">« {{ reponse_service }} »<br><span class="legende">Réponse d’origine du service, avant mise en forme.</span></p>{% endif %}
+      {% if etat.cle != "proposee" %}
+      <p class="legende">Validée par {{ v.validee_par }} le {{ v.validee_le|date_fr }}{% if f.verifiee_le %}, vérifiée par {{ f.verifiee_par }} le {{ f.verifiee_le|date_fr }}{% endif %}.{% if f.perime_le and etat.cle != "retiree" %} À revérifier le {{ f.perime_le|date_fr }}{% if f.saisonniere %}, car elle change souvent{% endif %}.{% endif %}</p>
+      {% endif %}
+      {% if versions|length > 1 %}
+      <details>
+        <summary class="lien-action">Historique : {{ versions|length }} versions</summary>
+        <ul class="liste questions">
+          {% for ver in versions %}
+          <li><p>Version {{ ver.numero }} · {% if ver.validee %}validée par {{ ver.validee_par }} le {{ ver.validee_le|date_fr }}{% else %}proposition non validée{% endif %}</p><p class="meta">{{ ver.titre }} — {{ ver.reponse|resume(120) }}</p></li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </section>
+
+    <details id="corriger" class="carte formulaire-fiche" {% if etat.cle == "proposee" or edition %}open{% endif %}>
+      <summary class="titre-3">{{ "Relire et valider" if etat.cle == "proposee" else "Corriger ou compléter" }}</summary>
+      <form method="post" action="/memoire/connaissances/{{ f.id }}/valider">
+        <input type="hidden" name="retour" value="{{ retour }}">
+        <div class="grille-2">
+          <div class="champ">
+            <label for="service_id">Service</label>
+            <select id="service_id" name="service_id"><option value="">À préciser</option>{% for sv in services %}<option value="{{ sv.id }}" {% if f.service_id == sv.id %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}</select>
+          </div>
+          <div class="champ">
+            <label for="sujet">Sujet</label>
+            <input id="sujet" name="sujet" type="text" list="liste-sujets" value="{{ f.sujet }}">
+          </div>
+        </div>
+        {% with f=v, saisonniere=f.saisonniere, valide_par=agent %}{% include "_champs_fiche.html" %}{% endwith %}
+        <div class="actions">
+          <button class="bouton" type="submit">{{ "Valider la connaissance" if etat.cle == "proposee" else "Enregistrer la correction" }}</button>
+        </div>
+      </form>
+      {% if etat.cle == "proposee" %}
+      <form method="post" action="/memoire/connaissances/{{ f.id }}/ecarter" style="margin-top: var(--espace-s)"><input type="hidden" name="retour" value="{{ retour }}"><button class="lien-action" type="submit">Écarter cette proposition</button></form>
+      {% endif %}
+    </details>
+    <datalist id="liste-sujets">{% for nom, n in sujets %}<option value="{{ nom }}">{% endfor %}</datalist>
+  </div>
+
+  {% if etat.cle not in ("proposee", "retiree") %}
+  <aside class="colonne-actions" aria-label="Actions">
+    <div class="carte">
+      <h2 class="titre-3">Agir sur cette connaissance</h2>
+      <a class="bouton bouton-secondaire" href="#corriger" onclick="document.getElementById('corriger').open = true">Corriger ou compléter</a>
+      {% if ouverte %}
+        <p class="legende">Vérification demandée le {{ ouverte.envoyee_le|date_fr }} à {{ ouverte.destinataire_nom or ouverte.destinataire_email }}.</p>
+      {% else %}
+        <form method="post" action="/memoire/connaissances/{{ f.id }}/verifier"><button class="bouton bouton-secondaire" type="submit">Demander une vérification au service</button></form>
+      {% endif %}
+      <details class="champ-compact">
+        <summary class="lien-action">{{ icone("drapeau", "icone icone-s") }} Signaler une information</summary>
+        <form method="post" action="/memoire/connaissances/{{ f.id }}/signaler">
+          <label for="type_">Problème</label>
+          <select id="type_" name="type_">{% for cle, nom in SIGNALEMENTS.items() %}<option value="{{ cle }}">{{ nom }}</option>{% endfor %}</select>
+          <label for="description">Précisez</label>
+          <textarea id="description" name="description" rows="3" placeholder="Ce qui ne va pas, et si possible la bonne information ou la source qui la contredit."></textarea>
+          <button class="bouton bouton-secondaire" type="submit">Signaler</button>
+        </form>
+      </details>
+      <form class="champ-compact" method="post" action="/memoire/connaissances/{{ f.id }}/classer">
+        <label for="c-service">Service propriétaire</label>
+        <select id="c-service" name="service_id"><option value="">À préciser</option>{% for sv in services %}<option value="{{ sv.id }}" {% if f.service_id == sv.id %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}</select>
+        <label for="c-sujet">Sujet</label>
+        <input id="c-sujet" name="sujet" type="text" list="liste-sujets" value="{{ f.sujet }}">
+        <button class="bouton bouton-secondaire" type="submit">Enregistrer</button>
+      </form>
+    </div>
+  </aside>
+  {% endif %}
+</div>
+{% endblock %}

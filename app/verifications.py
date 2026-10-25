@@ -75,7 +75,7 @@ Si rien n'a changé, un clic suffit : « Toujours juste ». Sinon, corrigez-la o
 Vérifier la fiche (sans compte, sans mot de passe) :
 {liens.url('v', jeton_de(v))}
 
-Le Jardinier, outil de la base de connaissances de la relation usagers
+Noèse, la mémoire de la collectivité
 """
     return objet, corps
 

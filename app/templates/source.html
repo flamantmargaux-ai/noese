@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icone, etiquette, etapes %}
+{% block titre %}{{ d.titre }}{% endblock %}
+{% block contenu %}
+{% set messages = {
+  "enregistree": "La source est enregistrée et consultable dans la mémoire.",
+  "propose": "La source est enregistrée. Voici les connaissances que nous en avons tirées : relisez-les avant de les valider.",
+  "aucune": "La source est enregistrée et consultable. Nous n’y avons pas trouvé de connaissance à proposer : elle reste disponible comme référence.",
+  "sans_proposition": "La source est enregistrée et consultable. La proposition automatique de connaissances n’a pas abouti : vous pouvez réessayer plus tard.",
+  "validee": "La connaissance est validée et fait désormais partie de la mémoire.",
+  "ecartee": "La proposition est écartée.",
+  "classee": "Le service et le sujet sont enregistrés.",
+} %}
+{% set restantes = propositions|selectattr("1")|selectattr("2.cle", "equalto", "proposee")|list %}
+{% set validees = propositions|selectattr("2.cle", "ne", "proposee")|selectattr("2.cle", "ne", "retiree")|list %}
+{% set ici = request.url.path ~ ("?lacune=" ~ lacune.id if lacune else "") %}
+
+{% if parcours %}
+  {{ etapes(4 if not restantes and (validees or message in ("aucune", "sans_proposition", "enregistree")) else 3) }}
+  <p class="surtitre">Enrichir la mémoire</p>
+  <h1 class="titre-2">{% if restantes %}Relisez ce que nous avons tiré de votre source{% else %}C’est enregistré{% endif %}</h1>
+{% else %}
+  <p><a class="retour" href="/memoire?vue=sources">{{ icone("retour") }} Explorer la mémoire</a></p>
+  <p class="surtitre">{{ nature }}</p>
+  <h1 class="titre-2">{{ d.titre }}</h1>
+  <p>{{ etiquette(etat) }}</p>
+{% endif %}
+
+{% if message in messages %}<div class="message" role="status">{{ messages[message] }}</div>{% endif %}
+{% if erreur == "proposition" %}<div class="message message-alerte" role="alert">La proposition de connaissances n’a pas abouti. La source, elle, est bien enregistrée. Réessayez dans un instant.</div>{% endif %}
+
+<div class="mise-en-page-detail">
+  <div class="colonne-principale">
+    {% if parcours %}
+    <section class="carte carte-source" aria-labelledby="t-source">
+      <p class="surtitre">{{ icone({"url": "page", "oral": "oral", "saisie": "saisie"}.get(d.type, "document"), "icone icone-s") }} {{ nature }} · {{ etiquette(etat) }}</p>
+      <h2 class="titre-3" id="t-source">{{ d.titre }}</h2>
+      <p class="legende">Ajoutée le {{ d.cree_le|date_fr }}{% if d.ajoute_par %} par {{ d.ajoute_par }}{% endif %}{% if d.url.startswith("http") %} · <a href="{{ d.url }}">{{ d.url }}</a>{% endif %} · {{ d.contenu|length|nombre }} caractères lus</p>
+      <a href="/memoire/sources/{{ d.id }}">Voir la source complète</a>
+    </section>
+    {% else %}
+    <section aria-labelledby="t-contenu">
+      <h2 class="titre-3" id="t-contenu">Contenu</h2>
+      <p class="legende">Ajoutée le {{ d.cree_le|date_fr }}{% if d.ajoute_par %} par {{ d.ajoute_par }}{% endif %}{% if d.url.startswith("http") %} · <a href="{{ d.url }}">{{ d.url }}</a>{% endif %}</p>
+      {% if d.note %}<p class="citation">{{ d.note }}</p>{% endif %}
+      <div class="texte-source">{{ d.contenu[:1500] }}{% if d.contenu|length > 1500 %}…{% endif %}</div>
+      {% if d.contenu|length > 1500 %}<details><summary class="lien-action">Afficher tout le texte ({{ d.contenu|length|nombre }} caractères)</summary><div class="texte-source">{{ d.contenu }}</div></details>{% endif %}
+    </section>
+    {% endif %}
+
+    <section class="section-courte" aria-labelledby="t-propositions">
+      <h2 class="titre-3" id="t-propositions">Connaissances tirées de cette source</h2>
+      {% if restantes %}
+      <p class="legende">Rien n’entre dans la mémoire sans votre accord. Validez une proposition telle quelle, corrigez-la avant de la valider, ou écartez-la.</p>
+      {% for f, v, e in restantes %}
+      <article class="proposition">
+        <div class="proposition-tete"><h3 class="titre-ligne">{{ v.titre }}</h3>{{ etiquette(e) }}</div>
+        <p>{{ v.reponse }}</p>
+        {% if v.conditions %}<p class="legende"><strong>Conditions :</strong> {{ v.conditions }}</p>{% endif %}
+        {% if v.pieces %}<p class="legende"><strong>Pièces :</strong> {{ v.pieces.splitlines()|join(", ") }}</p>{% endif %}
+        {% if v.a_verifier %}<p class="legende"><strong>À vérifier :</strong> {{ v.a_verifier }}</p>{% endif %}
+        <div class="actions">
+          <form method="post" action="/memoire/connaissances/{{ f.id }}/valider">
+            {% for champ in ("titre", "reponse", "conditions", "pieces", "lien_demarche") %}<input type="hidden" name="{{ champ }}" value="{{ v[champ] }}">{% endfor %}
+            <input type="hidden" name="saisonniere" value="{{ '1' if f.saisonniere else '' }}">
+            <input type="hidden" name="valide_par" value="{{ agent }}">
+            <input type="hidden" name="sujet" value="{{ f.sujet }}"><input type="hidden" name="service_id" value="{{ f.service_id or '' }}">
+            <input type="hidden" name="retour" value="{{ ici }}">
+            <button class="bouton" type="submit">{{ icone("valide") }}Valider</button>
+          </form>
+          <a class="bouton bouton-secondaire" href="/memoire/connaissances/{{ f.id }}?retour={{ ici|urlencode }}#corriger">Corriger avant de valider</a>
+          <form method="post" action="/memoire/connaissances/{{ f.id }}/ecarter">
+            <input type="hidden" name="retour" value="{{ ici }}">
+            <button class="lien-action" type="submit">Écarter</button>
+          </form>
+        </div>
+      </article>
+      {% endfor %}
+      {% endif %}
+      {% if validees %}
+      <ul class="liste">
+        {% for f, v, e in validees %}
+        <li><a class="ligne-lien" href="/memoire/connaissances/{{ f.id }}"><div><span class="titre-ligne">{{ v.titre }}</span><span class="meta">Validée par {{ v.validee_par }} le {{ v.validee_le|date_fr }}</span></div>{{ etiquette(e) }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if not restantes %}
+      <form method="post" action="/memoire/sources/{{ d.id }}/proposer" class="proposer" data-attente="Lecture de la source en cours…">
+        <input type="hidden" name="retour" value="{{ request.url.path }}"><input type="hidden" name="lacune" value="{{ lacune.id if lacune else '' }}">
+        <p class="legende">{% if validees %}Vous pouvez demander d’autres propositions à partir de cette source.{% else %}Aucune connaissance n’a encore été tirée de cette source.{% endif %} La lecture porte sur les 12&#8239;000 premiers caractères et prend quelques secondes.</p>
+        <button class="bouton bouton-secondaire" type="submit">Proposer des connaissances à partir de cette source</button>
+      </form>
+      {% endif %}
+    </section>
+
+    {% if parcours and not restantes %}
+    <div class="carte fin-parcours">
+      <h2 class="titre-3">{{ icone("valide") }} Ce qui est enregistré</h2>
+      <ul class="exemples">
+        <li>La source « {{ d.titre }} », consultable dans la mémoire et utilisée pour vérifier les réponses aux habitants.</li>
+        {% if validees %}<li>{{ validees|length }} connaissance{{ "s" if validees|length > 1 }} validée{{ "s" if validees|length > 1 }}, avec cette source comme origine.</li>{% else %}<li>Aucune connaissance validée pour l’instant : la source reste à exploiter.</li>{% endif %}
+      </ul>
+      {% if lacune %}
+      <p>{% if lacune.statut == "resolu" %}{{ icone("valide", "icone icone-s") }} Le besoin « {{ lacune.libelle }} » est désormais couvert par la mémoire : la lacune est résolue.{% else %}Le besoin « {{ lacune.libelle }} » n’est pas encore entièrement couvert. Vous pouvez ajouter une autre source ou rédiger la connaissance qui manque.{% endif %}</p>
+      {% endif %}
+      <div class="actions">
+        {% if lacune %}<a class="bouton" href="/lacunes/{{ lacune.id }}">Revenir au besoin</a>{% endif %}
+        <a class="bouton {% if lacune %}bouton-secondaire{% endif %}" href="/enrichir">Ajouter autre chose</a>
+        <a class="bouton bouton-secondaire" href="/memoire/sources/{{ d.id }}">Voir la source</a>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if not parcours and besoins %}
+    <section class="section-courte" aria-labelledby="t-besoins">
+      <h2 class="titre-3" id="t-besoins">Besoins des habitants qui s’appuient sur cette source</h2>
+      <ul class="liste">{% for b in besoins[:8] %}<li><a class="ligne-lien" href="/lacunes/{{ b.id }}"><div><span class="titre-ligne">{{ b.libelle }}</span><span class="meta">{{ b.nb }} question{{ "s" if b.nb > 1 }}</span></div><span class="statut statut-{{ b.verdict or 'neutre' }}">{{ {"couvert": "Couvert", "partiel": "Partiel", "trou": "Sans réponse"}.get(b.verdict, "À vérifier") }}</span></a></li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+  </div>
+
+  <aside class="colonne-actions" aria-label="Classement de la source">
+    <div class="carte">
+      <h2 class="titre-3">{{ "Préciser" if parcours else "Classement" }}</h2>
+      <form class="pile" method="post" action="/memoire/sources/{{ d.id }}/classer">
+        <input type="hidden" name="retour" value="{{ ici }}">
+        <label for="s-service">Service concerné</label>
+        <select id="s-service" name="service_id"><option value="">À préciser</option>{% for sv in services %}<option value="{{ sv.id }}" {% if d.service_id == sv.id %}selected{% endif %}>{{ sv.nom }}</option>{% endfor %}</select>
+        <label for="s-sujet">Sujet</label>
+        <input id="s-sujet" name="sujet" type="text" list="liste-sujets" value="{{ d.sujet }}" placeholder="Par exemple : Encombrants">
+        <button class="bouton bouton-secondaire" type="submit">Enregistrer</button>
+      </form>
+      <datalist id="liste-sujets">{% for nom, n in sujets %}<option value="{{ nom }}">{% endfor %}</datalist>
+      {% if not parcours %}
+      <details class="champ-compact">
+        <summary class="lien-action">Retirer cette source</summary>
+        <form class="pile" method="post" action="/memoire/sources/{{ d.id }}/retirer">
+          <p class="legende">La source et son texte sortent de la mémoire. Les connaissances déjà validées à partir d’elle sont conservées ; les propositions non validées sont écartées.</p>
+          <button class="bouton bouton-secondaire" type="submit">Retirer la source</button>
+        </form>
+      </details>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}
+{% block tete %}<script src="/static/js/dictee.js?v={{ version_statique }}" defer></script>{% endblock %}

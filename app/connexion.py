@@ -16,7 +16,7 @@ DUREE_LIEN = timedelta(minutes=15)
 DUREE_SESSION = 30 * 24 * 3600  # secondes
 LIENS_PAR_HEURE = 5
 # Pages ouvertes sans connexion : celles des services ont leur propre lien magique.
-CHEMINS_PUBLICS = ("/connexion", "/r/", "/v/", "/static/", "/demo-site")
+CHEMINS_PUBLICS = ("/connexion", "/r/", "/v/", "/static/", "/demo-site", "/favicon.ico")
 
 
 def est_public(chemin: str) -> bool:
@@ -86,15 +86,15 @@ def demander_lien(s, email: str, maintenant: datetime | None = None) -> str | No
     adresse = liens.url("connexion", jeton)
     corps = f"""Bonjour{(' ' + u.nom) if u.nom else ''},
 
-Voici votre lien pour vous connecter au Jardinier. Il est valable 15 minutes et ne fonctionne qu'une fois :
+Voici votre lien pour vous connecter à Noèse. Il est valable 15 minutes et ne fonctionne qu'une fois :
 
 {adresse}
 
 Si vous n'avez pas demandé ce lien, ignorez ce message : personne ne pourra se connecter sans lui.
 
-Le Jardinier
+Noèse, la mémoire de la collectivité
 """
-    m = mails.envoyer(s, u.email, "Votre lien de connexion au Jardinier", corps, lien=adresse, nom_destinataire=u.nom)
+    m = mails.envoyer(s, u.email, "Votre lien de connexion à Noèse", corps, lien=adresse, nom_destinataire=u.nom)
     m.type = "connexion"
     return adresse if mode_journal() else None
 

@@ -1,0 +1,58 @@
+{% from "_macros.html" import icone, etiquette, priorite as etiquette_priorite %}
+{% if filtres.vue == "questions" %}
+  <p class="legende resume-filtres" role="status">
+    {{ lignes|length }} besoin{{ "s" if lignes|length > 1 }} distinct{{ "s" if lignes|length > 1 }}, regroupant {{ lignes|sum(attribute="nb")|nombre }} questions d’habitants. Classés par priorité, puis par nombre de questions.
+    <span class="info-bulle" tabindex="0" aria-label="{{ REGLE_PRIORITE }}">Comment la priorité est-elle calculée ?<span role="tooltip">{{ REGLE_PRIORITE }}</span></span>
+  </p>
+  {% if lignes %}
+  <ul class="liste">
+    {% for l in lignes %}
+    <li>
+      <a class="ligne-lien ligne-lacune" href="/lacunes/{{ l.groupe.id }}">
+        <span class="volume" aria-label="{{ l.nb }} questions">{{ l.nb }}</span>
+        <div>
+          <span class="titre-ligne">{{ l.groupe.libelle }}</span>
+          {% if l.exemple %}<span class="resume">« {{ l.exemple|resume(120) }} »</span>{% endif %}
+          <span class="meta">{{ l.service or "Service à préciser" }}{% if l.groupe.sujet %} · {{ l.groupe.sujet }}{% endif %} · {{ TYPES[l.groupe.verdict] }} · {{ LIBELLES_STATUT[l.groupe.statut] }}{% if l.transferts %} · {{ l.transferts }} passée{{ "s" if l.transferts > 1 }} à un agent{% endif %}</span>
+        </div>
+        {{ etiquette_priorite(l.priorite, PRIORITES) }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="vide vide-compact"><div>
+    {% if filtres.statut == "a_traiter" and not filtres.q and not filtres.service and not filtres.sujet %}
+    <p>Aucune lacune à traiter. Importez de nouvelles questions d’habitants pour vérifier que la mémoire reste complète.</p>
+    <a class="bouton bouton-secondaire" href="/enrichir/questions">Importer des questions</a>
+    {% else %}<p>Aucun besoin ne correspond à ces filtres.</p>{% endif %}
+  </div></div>
+  {% endif %}
+{% else %}
+  {% set total = qualite.values()|map("length")|sum %}
+  <p class="legende resume-filtres">Une connaissance est à vérifier quand un agent l’a signalée, ou quand sa date de révision approche ou est dépassée. Cette date suit la règle de fraîcheur des paramètres : 6 mois, ou 1 mois pour un tarif, une date ou une saison. Les sources, elles, n’ont pas encore de règle de péremption, et les contradictions remontent par les signalements.</p>
+  {% if total %}
+    {% for cle, titre, aide in [("signalee", "Signalées par les agents", "Erreurs, contradictions ou informations dépassées remontées par un agent."), ("depassee", "Révision dépassée", "La date de révision est passée : la connaissance reste consultable, mais doit être confirmée."), ("a_verifier", "À vérifier bientôt", "Le service propriétaire va recevoir une demande de vérification.")] %}
+      {% if qualite[cle] %}
+      <section class="section-courte" aria-labelledby="q-{{ cle }}">
+        <h2 class="titre-3" id="q-{{ cle }}">{{ titre }} <span class="compte">{{ qualite[cle]|length }}</span></h2>
+        <p class="legende">{{ aide }}</p>
+        <ul class="liste">
+          {% for l in qualite[cle] %}
+          <li><a class="ligne-lien" href="/memoire/connaissances/{{ l.fiche.id }}">
+            <div><span class="titre-ligne">{{ l.version.titre }}</span>
+              <span class="meta">{{ l.service or "Service à préciser" }}{% if l.fiche.sujet %} · {{ l.fiche.sujet }}{% endif %}{% if cle == "signalee" %} · {{ SIGNALEMENTS.get(l.fiche.signalement_type, "Signalée") }} par {{ l.fiche.signalee_par or "un agent" }}{% elif l.fiche.perime_le %} · révision prévue le {{ l.fiche.perime_le|date_fr }}{% endif %}</span></div>
+            {{ etiquette(l.etat) }}
+          </a></li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+  <div class="vide vide-compact"><div>
+    <p>Aucune connaissance à vérifier pour l’instant.</p>
+    <p class="legende">Quand une information vous semble fausse ou dépassée, ouvrez-la dans « Explorer la mémoire » et signalez-la : elle apparaîtra ici.</p>
+  </div></div>
+  {% endif %}
+{% endif %}
